@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 try:
     import tomllib  # Python 3.11+
 except ImportError:  # pragma: no cover - exercised by the Python 3.10 CI job
@@ -172,6 +174,46 @@ class InstallTests(unittest.TestCase):
             messages = uninstall(agent_arg="claude", scope="project", destination=destination)
             self.assertTrue(unrelated.exists())
             self.assertTrue(any("unsafe manifest path" in message for message in messages))
+
+    def test_modified_shared_skill_is_not_claimed_by_a_new_target(self):
+        with tempfile.TemporaryDirectory() as temp:
+            destination = Path(temp)
+            install(
+                agent_arg="gemini",
+                scope="project",
+                skills=["code-review"],
+                components=["skills"],
+                destination=destination,
+            )
+            skill_path = destination / ".agents" / "skills" / "code-review" / "SKILL.md"
+            custom = skill_path.read_text(encoding="utf-8") + "\n# Local customization\n"
+            skill_path.write_text(custom, encoding="utf-8")
+            install(
+                agent_arg="antigravity",
+                scope="project",
+                skills=["code-review"],
+                components=["skills"],
+                destination=destination,
+            )
+            manifest = json.loads((destination / ".agentforge" / "install-manifest.json").read_text())
+            references = [x for x in manifest["installations"] if x["path"] == str(skill_path.resolve())]
+            self.assertEqual({x["target"] for x in references}, {"gemini"})
+            uninstall(agent_arg="gemini", scope="project", destination=destination)
+            self.assertTrue(skill_path.exists())
+            self.assertEqual(skill_path.read_text(encoding="utf-8"), custom)
+
+    def test_copilot_global_agents_use_the_personal_agents_directory(self):
+        with tempfile.TemporaryDirectory() as home:
+            with patch.dict(os.environ, {"HOME": home}):
+                install(
+                    agent_arg="copilot",
+                    scope="global",
+                    components=["agents"],
+                )
+                agent_path = Path(home) / ".copilot" / "agents" / "architect.agent.md"
+                self.assertTrue(agent_path.is_file())
+                uninstall(agent_arg="copilot", scope="global")
+                self.assertFalse(agent_path.exists())
 
     def test_uninstall_preserves_modified_content(self):
         with tempfile.TemporaryDirectory() as temp:
