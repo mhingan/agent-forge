@@ -185,7 +185,8 @@ class InstallTests(unittest.TestCase):
                 components=["skills"],
                 destination=destination,
             )
-            skill_path = destination / ".agents" / "skills" / "code-review" / "SKILL.md"
+            skill_dir = destination / ".agents" / "skills" / "code-review"
+            skill_path = skill_dir / "SKILL.md"
             custom = skill_path.read_text(encoding="utf-8") + "\n# Local customization\n"
             skill_path.write_text(custom, encoding="utf-8")
             install(
@@ -196,7 +197,7 @@ class InstallTests(unittest.TestCase):
                 destination=destination,
             )
             manifest = json.loads((destination / ".agentforge" / "install-manifest.json").read_text())
-            references = [x for x in manifest["installations"] if x["path"] == str(skill_path.resolve())]
+            references = [x for x in manifest["installations"] if x["path"] == str(skill_dir.resolve())]
             self.assertEqual({x["target"] for x in references}, {"gemini"})
             uninstall(agent_arg="gemini", scope="project", destination=destination)
             self.assertTrue(skill_path.exists())
