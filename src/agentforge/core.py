@@ -185,6 +185,7 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
                         errors.append(f"{rel}: broken local reference link '{relative}'")
 
     agent_names: set[str] = set()
+    agent_descriptions: dict[str, str] = {}
     if agents_dir.is_dir():
         for agent_file in sorted(agents_dir.glob("*.md")):
             meta, body = parse_frontmatter(agent_file.read_text(encoding="utf-8"))
@@ -196,6 +197,11 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
             if name in agent_names:
                 errors.append(f"Duplicate agent name: {name}")
             agent_names.add(name)
+            agent_descriptions[name] = description
+            if len(description) > 1024:
+                errors.append(f"{agent_file.relative_to(root)}: description exceeds 1024 characters")
+            if "<" in description or ">" in description:
+                errors.append(f"{agent_file.relative_to(root)}: description must not contain XML/HTML tags")
             if not body.strip():
                 errors.append(f"{agent_file.relative_to(root)}: empty agent prompt")
 
@@ -259,6 +265,10 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
         for agent_name, entry in agent_entries.items():
             if entry.get("path") != f"agents/{agent_name}.md":
                 errors.append(f"catalog/agents.json: invalid path for {agent_name}")
+            if entry.get("description") != agent_descriptions.get(agent_name):
+                errors.append(f"catalog/agents.json: description mismatch for {agent_name}")
+            if not isinstance(entry.get("title"), str) or not isinstance(entry.get("tags"), list):
+                errors.append(f"catalog/agents.json: malformed entry for {agent_name}")
             if entry.get("default_mode") not in {"read-only", "read-write"}:
                 errors.append(f"catalog/agents.json: invalid default_mode for {agent_name}")
             recommendations = entry.get("recommended_skills", [])
