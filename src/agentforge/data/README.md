@@ -87,14 +87,35 @@ python -m agentforge install --agent claude,codex --scope global
 
 Global installs use each target's documented user-level directories for skills and specialist profiles. Project context files, rules, and workflows are not written globally. Global instruction files are deliberately not overwritten.
 
-### Optional: install the CLI
+### Install from PyPI
+
+Install the published package:
 
 ```bash
-python -m pip install .
+python -m pip install agentforge-toolkit
+```
+
+Then use the CLI:
+
+```bash
 agentforge --version
 agentforge validate --strict
 agentforge install --agent all --scope project
 ```
+
+### Install from source (development)
+
+```bash
+git clone https://github.com/mhingan/agent-forge.git
+cd agent-forge
+python -m pip install -e .
+```
+
+See [PyPI publishing](docs/publishing.md) for maintainer release instructions.
+
+## Forge Runtime integration
+
+AgentForge provides the specialist roles and reusable skills used by [Forge Runtime](https://github.com/mhingan/forge-runtime). The `forge-runner` profile coordinates end-to-end delivery and uses the local Forge MCP Gateway when it is available. Install the runtime separately with `python -m pip install forge-agent-runtime`, then run `forge setup --ide copilot` to register the local gateway and Copilot agent profile. Secrets belong in the operating-system credential vault, not in chat or repository files.
 
 ## The library
 
