@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "targets": {
+    "claude": {"display_name":"Claude Code","project_skills":".claude/skills","global_skills":"~/.claude/skills","project_agents":".claude/agents","global_agents":"~/.claude/agents","agent_format":"claude-markdown","supports_custom_agents":true},
+    "codex": {"display_name":"OpenAI Codex","project_skills":".agents/skills","global_skills":"~/.agents/skills","project_agents":".codex/agents","global_agents":"~/.codex/agents","agent_format":"codex-toml","supports_custom_agents":true},
+    "copilot": {"display_name":"GitHub Copilot","project_skills":".github/skills","global_skills":"~/.copilot/skills","project_agents":".github/agents","global_agents":"~/.github/agents","agent_format":"copilot-agent-md","supports_custom_agents":true},
+    "gemini": {"display_name":"Gemini CLI","project_skills":".agents/skills","global_skills":"~/.agents/skills","project_agents":".gemini/agents","global_agents":"~/.gemini/agents","agent_format":"gemini-markdown","supports_custom_agents":true},
+    "antigravity": {"display_name":"Google Antigravity IDE","project_skills":".agents/skills","global_skills":"~/.gemini/config/skills","project_agents":".agents/agents","global_agents":"~/.gemini/config/agents","agent_format":"antigravity-markdown","supports_custom_agents":true},
+    "antigravity-cli": {"display_name":"Google Antigravity CLI","project_skills":".agents/skills","global_skills":"~/.gemini/antigravity-cli/skills","project_agents":".agents/agents","global_agents":"~/.gemini/config/agents","agent_format":"antigravity-markdown","supports_custom_agents":true}
+  }
+}
