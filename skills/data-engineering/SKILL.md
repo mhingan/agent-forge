@@ -112,6 +112,15 @@ Provide data flow, contracts, source-of-truth, transformation model, quality gat
 
 Avoid silent data drops, non-idempotent replay, unbounded extraction, undocumented schemas, metrics defined differently across teams, hardcoded credentials, personal data in notebooks, and pipelines with no owner or recovery path.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [data contract template](references/data-contract-template.md)
+- [pipeline runbook template](references/pipeline-runbook-template.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State datasets and contracts changed, lineage/quality checks added, volume/freshness assumptions, privacy/access controls, test results, and backfill/recovery implications.

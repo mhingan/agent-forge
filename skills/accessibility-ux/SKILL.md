@@ -85,6 +85,14 @@ Report standard/target, scope, barriers found by severity, affected elements, re
 
 Avoid positive tabindex ordering, clickable divs without keyboard behavior, placeholder-only labels, color-only indicators, focus removal, excessive live announcements, ARIA used to imitate native controls, and claims of compliance based only on automated scans.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [accessibility audit checklist](references/accessibility-audit-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State which barriers were addressed, which journeys/devices/assistive technologies were tested, what was not tested, and whether the result is a partial audit or a formal conformance assessment.

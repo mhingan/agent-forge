@@ -106,6 +106,14 @@ Provide the updated document, list the source-of-truth files checked, call out u
 
 Avoid marketing claims without evidence, screenshots with secrets, giant README files, duplicate conflicting instructions, ambiguous pronouns, undocumented defaults, stale setup commands, and examples that only work on the author's machine.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [documentation review checklist](references/documentation-review-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State audience and goal, files updated, sources checked, commands/examples validated, links reviewed, and known documentation gaps.

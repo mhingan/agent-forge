@@ -128,6 +128,14 @@ For significant work, produce:
 
 Avoid arbitrary sleeps, giant E2E-only suites, tests coupled to private implementation, snapshots without behavior assertions, shared state, real production data, broad exception assertions, hidden skips, and line coverage as the only quality metric.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [test plan template](references/test-plan-template.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 List the behavior covered, regression case, test layers, exact execution results, flaky/blocked tests, and remaining risk.

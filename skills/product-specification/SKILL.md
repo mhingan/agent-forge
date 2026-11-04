@@ -120,6 +120,15 @@ A specification is ready when the problem is understood, outcomes are measurable
 
 Avoid solution-first requirements, untestable adjectives, hidden assumptions, scope creep, user stories without acceptance criteria, MVPs that omit safety, invented metrics, and stakeholder sign-off without clarity on unresolved risks.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [product brief template](references/product-brief-template.md)
+- [acceptance criteria examples](references/acceptance-criteria-examples.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 Summarize the problem, intended outcomes, key requirements, acceptance criteria, out-of-scope items, risks, dependencies, and decisions still needed.

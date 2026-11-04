@@ -108,6 +108,14 @@ Verify log fields are structured and redacted, metrics have bounded cardinality,
 
 Avoid dashboards without questions, logs with secrets, high-cardinality metrics, alerting on every exception, retry storms, liveness checks coupled to every dependency, untested backups, and reliability claims unsupported by measured objectives.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [slo definition template](references/slo-definition-template.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 List instrumentation, SLIs/SLOs, dashboards and alerts, test/incident exercises, privacy considerations, and operational gaps.
