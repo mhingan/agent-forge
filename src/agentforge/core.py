@@ -228,7 +228,7 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
     # All committed JSON must be valid, duplicate-key-free, and consistently
     # rendered with two-space indentation, UTF-8 characters, and a final newline.
     for json_file in sorted(root.rglob("*.json")):
-        if ".git" in json_file.parts or ".venv" in json_file.parts:
+        if any(part in {".git", ".venv", "venv", "build", "dist", "__pycache__"} for part in json_file.parts):
             continue
         try:
             raw = json_file.read_text(encoding="utf-8")
