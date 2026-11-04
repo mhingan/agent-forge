@@ -11,7 +11,7 @@ AgentForge is both a curated content library and a lightweight Python CLI. The r
 | Library | Included | What it is for |
 |---|---:|---|
 | Skills | 18 | Detailed task playbooks with activation criteria, procedures, quality gates, and optional reference material |
-| Specialist agents | 15 | Bounded roles with delegation guidance, deliverables, and safety boundaries |
+| Specialist agents | 16 | Bounded roles with delegation guidance, deliverables, and safety boundaries |
 | Engineering rules | 12 | Persistent constraints for universal engineering, languages, security, APIs, frontend, mobile, AI, data, and operations |
 | Workflows | 9 | Repeatable end-to-end delivery, incident, migration, discovery, review, and release processes |
 | Prompt commands | 7 | Focused reusable prompts for planning, explanation, refactoring, review, testing, security, and releases |
@@ -152,7 +152,7 @@ The provider-neutral role definitions live in `agents/`. Each includes a mission
 - **Application engineering:** `backend-engineer`, `frontend-engineer`, `mobile-engineer`
 - **Data and platform:** `data-engineer`, `database-engineer`, `devops-engineer`, `reliability-engineer`
 - **Quality and safety:** `test-engineer`, `code-reviewer`, `bug-investigator`, `security-auditor`, `accessibility-specialist`
-- **Communication:** `documentation-engineer`
+- **Communication and delivery coordination:** `documentation-engineer`, `forge-runner`
 
 See [catalog/agents.json](catalog/agents.json) for recommended skills and agent modes. Agent profiles do not grant host permissions; actual tool access is controlled by the provider and invoking session.
 
