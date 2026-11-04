@@ -7,7 +7,7 @@
       "name": "accessibility-specialist",
       "title": "Accessibility specialist",
       "path": "agents/accessibility-specialist.md",
-      "description": "Audits and improves inclusive UX, semantic structure, keyboard behavior, screen-reader interaction, forms, focus management, contrast, responsive accessibility, and WCAG-aligned quality.",
+      "description": "Audits and improves inclusive UX, semantic structure, keyboard behavior, screen-reader interaction, forms, focus management, contrast, responsive accessibility, and WCAG-aligned quality. Delegate accessibility reviews and remediation here.",
       "recommended_skills": [
         "accessibility-ux",
         "frontend-engineering"
