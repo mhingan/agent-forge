@@ -17,6 +17,8 @@
 - Added progressive-disclosure reference resources so detailed templates are available when needed without inflating every skill prompt.
 - Hardened installation and uninstall behavior: `--force` preserves locally modified content, unmanaged files remain untouched, and manifest-driven removal is restricted to known AgentForge paths.
 - Improved Antigravity rule triggers and glob metadata.
+- Aligned GitHub Copilot CLI personal agent installation with `~/.copilot/agents/` and added regression coverage for shared modified skills and global uninstall.
+- Expanded target-registry validation to cover both project and global paths.
 
 ### Security
 - Validate manifest structure and reject duplicate JSON keys or invalid JSON constants.
