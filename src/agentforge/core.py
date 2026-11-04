@@ -27,7 +27,10 @@ def data_root() -> Path:
 
 
 def load_manifest(root: Path, scope: str) -> tuple[Path, dict[str, Any]]:
-    manifest_path = (Path.home() if scope == "global" else root) / ".agentforge" / "install-manifest.json"
+    manifest_root = Path.home() if scope == "global" else root
+    manifest_path = manifest_root / ".agentforge" / "install-manifest.json"
+    if not _is_within(manifest_path, manifest_root):
+        raise ValueError(f"Refusing to read or write a manifest outside the selected root: {manifest_path}")
     if manifest_path.exists():
         try:
             data = _load_json_file(manifest_path)
@@ -100,7 +103,7 @@ def _is_managed_location(path: Path, root: Path, scope: str) -> bool:
             ".codex/agents/", ".copilot/skills/", ".copilot/agents/",
             ".gemini/skills/", ".gemini/agents/",
             ".gemini/config/skills/", ".gemini/config/agents/", ".gemini/config/rules/",
-            ".gemini/antigravity-cli/skills/",
+            ".gemini/antigravity-cli/skills/", ".github/agents/",
         )
         exact = set()
     return relative in exact or any(relative.startswith(prefix) for prefix in allowed)
