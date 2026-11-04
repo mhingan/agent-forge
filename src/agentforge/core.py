@@ -283,12 +283,20 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
             errors.append("adapters/targets.json: targets do not match implemented adapters")
         for target_id, target in TARGETS.items():
             configured = target_catalog["targets"].get(target_id, {})
-            skill_paths = configured.get("skills", {}).get("project", [])
-            agent_paths = configured.get("agents", {}).get("project", [])
+            skill_config = configured.get("skills", {})
+            agent_config = configured.get("agents", {})
+            skill_paths = skill_config.get("project", [])
+            global_skill_paths = skill_config.get("global", [])
+            agent_paths = agent_config.get("project", [])
+            global_agent_paths = agent_config.get("global", [])
             if not skill_paths or skill_paths[0] != target.project_skills:
                 errors.append(f"adapters/targets.json: project skill path mismatch for {target_id}")
+            if not global_skill_paths or global_skill_paths[0] != target.global_skills:
+                errors.append(f"adapters/targets.json: global skill path mismatch for {target_id}")
             if target.project_agents and (not agent_paths or agent_paths[0] != target.project_agents):
                 errors.append(f"adapters/targets.json: project agent path mismatch for {target_id}")
+            if target.global_agents and (not global_agent_paths or global_agent_paths[0] != target.global_agents):
+                errors.append(f"adapters/targets.json: global agent path mismatch for {target_id}")
     except (OSError, KeyError, TypeError, json.JSONDecodeError, ValueError) as exc:
         errors.append(f"adapters/targets.json: invalid target registry: {exc}")
 
