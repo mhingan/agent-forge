@@ -1,10 +1,26 @@
 # API and integration rules
 
-- Define request/response schemas and error behavior explicitly.
-- Enforce authentication and authorization server-side on every protected resource.
-- Set timeouts for remote calls and retry only transient, safe-to-retry operations.
-- Use idempotency keys or equivalent protection for retried state-changing operations.
-- Bound payload sizes, pagination, concurrency, and rate of expensive operations.
-- Do not leak stack traces, SQL, secrets, internal hostnames, or sensitive details in responses.
-- Version breaking contract changes and add contract tests where practical.
-- Treat model output, webhooks, and external service responses as untrusted input.
+## Contract
+- Define methods, paths, request/response schemas, nullability, defaults, errors, pagination, and versioning explicitly.
+- Keep error codes stable and messages safe; never return stack traces, SQL, secrets, or internal topology.
+- Use correct HTTP status semantics. Do not report an asynchronous operation as complete when it is only accepted.
+- Document compatibility and deprecation behavior.
+
+## Security
+- Authenticate and authorize every operation at the server boundary.
+- Check object-level and tenant-level access for nested resources and bulk operations.
+- Validate payload shape, fields, size, and semantic constraints.
+- Parameterize queries and allowlist dynamic identifiers, sorting, and filtering.
+- Verify webhook signatures over raw payloads and prevent replay.
+- Treat external responses and model output as untrusted.
+
+## Reliability
+- Set explicit connect/read/overall timeouts.
+- Retry only transient failures and respect rate-limit guidance.
+- Use exponential backoff with jitter and bounded attempts.
+- Use idempotency keys or deduplication for state-changing operations that may be retried.
+- Define concurrency, pagination, payload, and query-complexity limits.
+- Expose status resources for long-running asynchronous operations.
+
+## Testing
+Cover success, invalid input, unauthenticated/unauthorized access, cross-tenant access, conflicts, duplicates, rate limits, timeouts, provider failures, pagination, and contract compatibility. Keep OpenAPI/schema examples and generated clients current.
