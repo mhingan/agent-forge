@@ -141,18 +141,25 @@ def render_agent(target_id: str, source: Path) -> tuple[str, str]:
 def render_antigravity_rule(source: Path) -> str:
     """Render canonical rule Markdown with Antigravity's required trigger metadata."""
     rule_name = source.stem
-    metadata = {
+    metadata: dict[str, tuple[str, str, list[str] | None]] = {
         "universal": ("always_on", "Baseline engineering and safety rules that apply to every task.", None),
         "security": ("always_on", "Security, privacy, authorization, and secret-handling constraints.", None),
         "git": ("model_decision", "Use when performing Git operations, staging, committing, branching, or reviewing diffs.", None),
-        "python": ("glob", "Python coding standards for Python source and test files.", "*.py, **/*.py"),
-        "typescript": ("glob", "TypeScript coding standards for TypeScript and TSX files.", "*.ts, *.tsx, **/*.ts, **/*.tsx"),
+        "python": ("glob", "Python coding standards for Python source and test files.", ["*.py", "**/*.py"]),
+        "typescript": ("glob", "TypeScript coding standards for TypeScript and TSX files.", ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx"]),
         "api": ("model_decision", "Use when designing, implementing, reviewing, or integrating APIs.", None),
+        "mobile": ("model_decision", "Use when changing mobile app code, lifecycle, navigation, permissions, or release configuration.", None),
+        "data": ("model_decision", "Use when building or changing data pipelines, ingestion, transformations, or data contracts.", None),
+        "observability": ("model_decision", "Use when changing logs, metrics, traces, alerting, SLOs, or incident procedures.", None),
+        "accessibility": ("model_decision", "Use when changing UI semantics, interactions, forms, focus, or accessibility behavior.", None),
+        "frontend": ("glob", "Frontend implementation standards for JavaScript, TypeScript, CSS, and component files.", ["*.js", "*.jsx", "*.ts", "*.tsx", "*.css", "*.scss", "**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.scss"]),
+        "ai": ("model_decision", "Use when changing model prompts, retrieval, agents, tools, or AI data flows.", None),
     }
     trigger, description, globs = metadata.get(rule_name, ("model_decision", f"Use these {rule_name} engineering rules when relevant.", None))
     frontmatter = ["---", f"trigger: {trigger}", f"description: {json.dumps(description, ensure_ascii=False)}"]
     if globs:
-        frontmatter.append(f"globs: {json.dumps(globs)}")
+        frontmatter.append("globs:")
+        frontmatter.extend(f"  - {json.dumps(glob, ensure_ascii=False)}" for glob in globs)
     frontmatter.append("---")
     return "\n".join(frontmatter) + "\n\n" + source.read_text(encoding="utf-8").strip() + "\n"
 
