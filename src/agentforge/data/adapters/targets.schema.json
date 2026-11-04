@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "targets"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "catalog_version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "targets": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "display_name",
+          "product_scope",
+          "skills",
+          "agents",
+          "instructions",
+          "official_docs"
+        ],
+        "properties": {
+          "display_name": {
+            "type": "string"
+          },
+          "product_scope": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "object",
+            "required": [
+              "project",
+              "global",
+              "format"
+            ],
+            "properties": {
+              "project": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "global": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "format": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "agents": {
+            "type": "object",
+            "required": [
+              "project",
+              "global",
+              "format"
+            ],
+            "properties": {
+              "project": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "global": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "format": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "rules": {
+            "type": "object"
+          },
+          "instructions": {
+            "type": "object"
+          },
+          "shared_skill_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "official_docs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

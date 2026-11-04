@@ -1,11 +1,260 @@
 {
   "schema_version": 1,
+  "catalog_version": "1.1.0",
+  "description": "Human- and machine-readable platform compatibility registry. The adapter implementation is authoritative for generated output; official product documentation is authoritative for discovery behavior.",
   "targets": {
-    "claude": {"display_name":"Claude Code","project_skills":".claude/skills","global_skills":"~/.claude/skills","project_agents":".claude/agents","global_agents":"~/.claude/agents","agent_format":"claude-markdown","supports_custom_agents":true},
-    "codex": {"display_name":"OpenAI Codex","project_skills":".agents/skills","global_skills":"~/.agents/skills","project_agents":".codex/agents","global_agents":"~/.codex/agents","agent_format":"codex-toml","supports_custom_agents":true},
-    "copilot": {"display_name":"GitHub Copilot","project_skills":".github/skills","global_skills":"~/.copilot/skills","project_agents":".github/agents","global_agents":"~/.github/agents","agent_format":"copilot-agent-md","supports_custom_agents":true},
-    "gemini": {"display_name":"Gemini CLI","project_skills":".agents/skills","global_skills":"~/.agents/skills","project_agents":".gemini/agents","global_agents":"~/.gemini/agents","agent_format":"gemini-markdown","supports_custom_agents":true},
-    "antigravity": {"display_name":"Google Antigravity IDE","project_skills":".agents/skills","global_skills":"~/.gemini/config/skills","project_agents":".agents/agents","global_agents":"~/.gemini/config/agents","agent_format":"antigravity-markdown","supports_custom_agents":true},
-    "antigravity-cli": {"display_name":"Google Antigravity CLI","project_skills":".agents/skills","global_skills":"~/.gemini/antigravity-cli/skills","project_agents":".agents/agents","global_agents":"~/.gemini/config/agents","agent_format":"antigravity-markdown","supports_custom_agents":true}
+    "claude": {
+      "display_name": "Claude Code",
+      "product_scope": "CLI and IDE",
+      "skills": {
+        "project": [
+          ".claude/skills"
+        ],
+        "global": [
+          "~/.claude/skills"
+        ],
+        "format": "Agent Skills directory"
+      },
+      "agents": {
+        "project": [
+          ".claude/agents/*.md"
+        ],
+        "global": [
+          "~/.claude/agents/*.md"
+        ],
+        "format": "Markdown with YAML frontmatter"
+      },
+      "instructions": {
+        "project": [
+          "CLAUDE.md"
+        ],
+        "global": [
+          "~/.claude/CLAUDE.md"
+        ]
+      },
+      "shared_skill_paths": [],
+      "official_docs": [
+        "https://code.claude.com/docs/en/skills",
+        "https://code.claude.com/docs/en/sub-agents"
+      ]
+    },
+    "codex": {
+      "display_name": "OpenAI Codex",
+      "product_scope": "CLI and IDE",
+      "skills": {
+        "project": [
+          ".agents/skills"
+        ],
+        "global": [
+          "~/.agents/skills"
+        ],
+        "format": "Agent Skills directory"
+      },
+      "agents": {
+        "project": [
+          ".codex/agents/*.toml"
+        ],
+        "global": [
+          "~/.codex/agents/*.toml"
+        ],
+        "format": "Codex custom-agent TOML"
+      },
+      "instructions": {
+        "project": [
+          "AGENTS.md"
+        ],
+        "global": [
+          "~/.codex/AGENTS.md"
+        ]
+      },
+      "shared_skill_paths": [
+        ".agents/skills",
+        "~/.agents/skills"
+      ],
+      "official_docs": [
+        "https://developers.openai.com/codex/skills",
+        "https://developers.openai.com/codex/subagents"
+      ]
+    },
+    "copilot": {
+      "display_name": "GitHub Copilot",
+      "product_scope": "Copilot CLI, IDEs, GitHub cloud agent",
+      "skills": {
+        "project": [
+          ".github/skills",
+          ".claude/skills",
+          ".agents/skills"
+        ],
+        "global": [
+          "~/.copilot/skills",
+          "~/.agents/skills"
+        ],
+        "format": "Agent Skills directory"
+      },
+      "agents": {
+        "project": [
+          ".github/agents/*.agent.md"
+        ],
+        "global": [
+          "~/.copilot/agents/*.agent.md"
+        ],
+        "format": "Markdown with YAML frontmatter"
+      },
+      "instructions": {
+        "project": [
+          ".github/copilot-instructions.md"
+        ],
+        "path_scoped": [
+          ".github/instructions/*.instructions.md"
+        ]
+      },
+      "shared_skill_paths": [
+        ".agents/skills"
+      ],
+      "official_docs": [
+        "https://docs.github.com/en/copilot/concepts/customizations/custom-agents",
+        "https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills",
+        "https://docs.github.com/en/copilot/reference/customization-cheat-sheet"
+      ]
+    },
+    "gemini": {
+      "display_name": "Gemini CLI",
+      "product_scope": "CLI",
+      "skills": {
+        "project": [
+          ".gemini/skills",
+          ".agents/skills"
+        ],
+        "global": [
+          "~/.gemini/skills",
+          "~/.agents/skills"
+        ],
+        "format": "Agent Skills directory; .agents is an interoperable alias"
+      },
+      "agents": {
+        "project": [
+          ".gemini/agents/*.md"
+        ],
+        "global": [
+          "~/.gemini/agents/*.md"
+        ],
+        "format": "Markdown with YAML frontmatter"
+      },
+      "instructions": {
+        "project": [
+          "GEMINI.md"
+        ],
+        "global": [
+          "~/.gemini/GEMINI.md"
+        ]
+      },
+      "shared_skill_paths": [
+        ".agents/skills",
+        "~/.agents/skills"
+      ],
+      "official_docs": [
+        "https://geminicli.com/docs/cli/skills/",
+        "https://geminicli.com/docs/core/subagents/"
+      ]
+    },
+    "antigravity": {
+      "display_name": "Google Antigravity IDE / App",
+      "product_scope": "Desktop app and IDE integration",
+      "skills": {
+        "project": [
+          ".agents/skills"
+        ],
+        "global": [
+          "~/.gemini/config/skills"
+        ],
+        "format": "Agent Skills directory"
+      },
+      "agents": {
+        "project": [
+          ".agents/agents/*.md"
+        ],
+        "global": [
+          "~/.gemini/config/agents/*.md"
+        ],
+        "format": "Markdown with YAML frontmatter"
+      },
+      "rules": {
+        "project": [
+          ".agents/rules/*.md"
+        ],
+        "global": [
+          "~/.gemini/config/rules/*.md"
+        ],
+        "format": "Markdown with required trigger frontmatter"
+      },
+      "instructions": {
+        "project": [
+          "AGENTS.md",
+          "GEMINI.md"
+        ],
+        "global": [
+          "~/.gemini/AGENTS.md",
+          "~/.gemini/GEMINI.md"
+        ]
+      },
+      "shared_skill_paths": [
+        ".agents/skills"
+      ],
+      "official_docs": [
+        "https://antigravity.google/docs/skills",
+        "https://antigravity.google/docs/rules/",
+        "https://antigravity.google/docs/subagents"
+      ]
+    },
+    "antigravity-cli": {
+      "display_name": "Google Antigravity CLI",
+      "product_scope": "CLI",
+      "skills": {
+        "project": [
+          ".agents/skills"
+        ],
+        "global": [
+          "~/.gemini/antigravity-cli/skills",
+          "~/.gemini/skills"
+        ],
+        "format": "Agent Skills directory"
+      },
+      "agents": {
+        "project": [
+          ".agents/agents/*.md"
+        ],
+        "global": [
+          "~/.gemini/config/agents/*.md"
+        ],
+        "format": "Markdown with YAML frontmatter"
+      },
+      "rules": {
+        "project": [
+          ".agents/rules/*.md"
+        ],
+        "global": [
+          "~/.gemini/config/rules/*.md"
+        ],
+        "format": "Markdown with required trigger frontmatter"
+      },
+      "instructions": {
+        "project": [
+          "AGENTS.md",
+          "GEMINI.md"
+        ],
+        "global": [
+          "~/.gemini/AGENTS.md",
+          "~/.gemini/GEMINI.md"
+        ]
+      },
+      "shared_skill_paths": [
+        ".agents/skills"
+      ],
+      "official_docs": [
+        "https://antigravity.google/docs/skills",
+        "https://antigravity.google/docs/rules/",
+        "https://antigravity.google/docs/subagents"
+      ]
+    }
   }
 }

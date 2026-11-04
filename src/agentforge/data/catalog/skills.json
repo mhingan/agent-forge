@@ -1,18 +1,251 @@
 {
   "schema_version": 1,
+  "catalog_version": "1.1.0",
+  "description": "Canonical index of reusable Agent Skills. Each entry points to one directory containing a SKILL.md file and optional progressive-disclosure resources.",
   "skills": [
-    {"name":"architecture","path":"skills/architecture/SKILL.md","description":"Design and evaluate software architecture for new systems, major changes, and technical-debt decisions. Use when choosing boundaries, components, dependencies, deployment topology, or migration strategies."},
-    {"name":"api-design","path":"skills/api-design/SKILL.md","description":"Design, document, or review HTTP and event-driven APIs, including contracts, versioning, validation, errors, and security. Use when creating endpoints, integrating services, or changing API behavior."},
-    {"name":"backend-engineering","path":"skills/backend-engineering/SKILL.md","description":"Build, refactor, or review production backend services, especially Python APIs and service layers. Use for FastAPI, Django, Flask, service integration, background jobs, and backend reliability work."},
-    {"name":"code-review","path":"skills/code-review/SKILL.md","description":"Review code changes for correctness, regressions, security, maintainability, and test gaps. Use before merging pull requests or auditing a specific diff; prioritize actionable findings over style preferences."},
-    {"name":"database-engineering","path":"skills/database-engineering/SKILL.md","description":"Design, query, migrate, and optimize relational databases, especially PostgreSQL. Use for schema design, SQL, indexing, transactions, data integrity, and database performance."},
-    {"name":"debugging","path":"skills/debugging/SKILL.md","description":"Investigate defects and unexpected behavior systematically using logs, traces, code, reproduction steps, and tests. Use when a bug is intermittent, unclear, or spans multiple components."},
-    {"name":"devops-cloud","path":"skills/devops-cloud/SKILL.md","description":"Build and operate deployment pipelines and cloud infrastructure safely. Use for CI/CD, containers, Kubernetes, infrastructure configuration, releases, observability, and incident response."},
-    {"name":"frontend-engineering","path":"skills/frontend-engineering/SKILL.md","description":"Build and review accessible, responsive frontend applications with modern JavaScript/TypeScript frameworks. Use for UI implementation, component architecture, state, routing, forms, performance, and browser behavior."},
-    {"name":"performance-optimization","path":"skills/performance-optimization/SKILL.md","description":"Find and improve measurable application, API, database, or build performance bottlenecks. Use when latency, throughput, memory, bundle size, or resource consumption is a concern."},
-    {"name":"security-audit","path":"skills/security-audit/SKILL.md","description":"Audit an application, API, repository, or deployment for security vulnerabilities and unsafe patterns. Use before releases, during code review, or when assessing authentication, authorization, data handling, or dependencies."},
-    {"name":"technical-writing","path":"skills/technical-writing/SKILL.md","description":"Create or improve technical documentation, runbooks, ADRs, API guides, onboarding material, and release notes. Use when technical information must be accurate, scannable, and maintainable."},
-    {"name":"testing-strategy","path":"skills/testing-strategy/SKILL.md","description":"Design and implement reliable automated testing across unit, integration, contract, UI, and end-to-end layers. Use when adding features, fixing bugs, or improving test confidence and CI reliability."},
-    {"name":"ai-integration","path":"skills/ai-integration/SKILL.md","description":"Integrate LLMs, model APIs, retrieval systems, and AI agents into applications with reliable evaluation, privacy, and safety controls. Use for chat, RAG, tool calling, orchestration, and model-provider abstractions."}
+    {
+      "name": "accessibility-ux",
+      "title": "Accessibility and inclusive UX",
+      "path": "skills/accessibility-ux/SKILL.md",
+      "description": "Design, implement, and audit accessible digital experiences using semantic structure, keyboard interaction, assistive technology, inclusive visual design, and WCAG-aligned practices. Use for UI reviews, design systems, forms, navigation, dialogs, and accessibility remediation.",
+      "tags": [
+        "quality",
+        "accessibility",
+        "ux",
+        "frontend",
+        "WCAG"
+      ]
+    },
+    {
+      "name": "ai-integration",
+      "title": "AI application and agent engineering",
+      "path": "skills/ai-integration/SKILL.md",
+      "description": "Design, implement, evaluate, and secure LLM-powered features, RAG systems, tool-using agents, and model-provider integrations. Use for model APIs, structured outputs, retrieval, prompt injection defenses, orchestration, evaluation, privacy, and cost control.",
+      "tags": [
+        "ai",
+        "llm",
+        "rag",
+        "agents",
+        "security",
+        "evaluation"
+      ]
+    },
+    {
+      "name": "api-design",
+      "title": "API design and contract engineering",
+      "path": "skills/api-design/SKILL.md",
+      "description": "Design, document, implement, or review HTTP, RPC, webhook, and event-driven API contracts. Use this skill for endpoint design, integrations, schema changes, versioning, pagination, authorization, and API reliability.",
+      "tags": [
+        "backend",
+        "api",
+        "contracts",
+        "openapi",
+        "integrations"
+      ]
+    },
+    {
+      "name": "architecture",
+      "title": "Software architecture",
+      "path": "skills/architecture/SKILL.md",
+      "description": "Design or review software architecture for new systems, major refactors, service boundaries, data ownership, technology choices, and migration plans. Use this skill when the task involves structural decisions or meaningful long-term technical trade-offs.",
+      "tags": [
+        "architecture",
+        "design",
+        "systems",
+        "adr",
+        "scalability"
+      ]
+    },
+    {
+      "name": "backend-engineering",
+      "title": "Backend engineering",
+      "path": "skills/backend-engineering/SKILL.md",
+      "description": "Build, refactor, debug, or review production backend services, APIs, integrations, and background jobs. Use for Python, TypeScript, Java, Go, or other server-side applications involving business logic, persistence, identity, reliability, or external systems.",
+      "tags": [
+        "backend",
+        "api",
+        "python",
+        "fastapi",
+        "django",
+        "services"
+      ]
+    },
+    {
+      "name": "code-review",
+      "title": "Code review",
+      "path": "skills/code-review/SKILL.md",
+      "description": "Perform read-only, evidence-based reviews of pull requests, diffs, or repository changes for correctness, security, data integrity, compatibility, reliability, and test quality. Use before merging or releasing code.",
+      "tags": [
+        "review",
+        "security",
+        "quality",
+        "regression",
+        "pull-request"
+      ]
+    },
+    {
+      "name": "data-engineering",
+      "title": "Data engineering",
+      "path": "skills/data-engineering/SKILL.md",
+      "description": "Design, build, validate, and operate reliable data pipelines, ingestion, transformation, orchestration, analytics models, and data contracts. Use for ETL/ELT, batch/stream processing, warehouse/lakehouse work, data quality, and governed data access.",
+      "tags": [
+        "data",
+        "etl",
+        "elt",
+        "pipelines",
+        "analytics",
+        "governance"
+      ]
+    },
+    {
+      "name": "database-engineering",
+      "title": "Database engineering",
+      "path": "skills/database-engineering/SKILL.md",
+      "description": "Design, query, migrate, secure, and optimize relational databases, especially PostgreSQL. Use for schema design, SQL, indexes, transactions, concurrency, data integrity, backup/recovery, and production migrations.",
+      "tags": [
+        "database",
+        "sql",
+        "postgresql",
+        "schema",
+        "migrations",
+        "performance"
+      ]
+    },
+    {
+      "name": "debugging",
+      "title": "Debugging and root-cause analysis",
+      "path": "skills/debugging/SKILL.md",
+      "description": "Investigate defects, failed builds, unexpected output, production incidents, and intermittent behavior using reproducible experiments and evidence. Use when symptoms are unclear, cross components, or require root-cause analysis.",
+      "tags": [
+        "debugging",
+        "incident",
+        "troubleshooting",
+        "root-cause"
+      ]
+    },
+    {
+      "name": "devops-cloud",
+      "title": "DevOps and cloud engineering",
+      "path": "skills/devops-cloud/SKILL.md",
+      "description": "Design, implement, secure, and operate cloud infrastructure and delivery pipelines. Use for CI/CD, containers, deployment platforms, Kubernetes, infrastructure as code, release engineering, secrets, monitoring, and incident response.",
+      "tags": [
+        "devops",
+        "cloud",
+        "ci-cd",
+        "docker",
+        "kubernetes",
+        "release"
+      ]
+    },
+    {
+      "name": "frontend-engineering",
+      "title": "Frontend engineering",
+      "path": "skills/frontend-engineering/SKILL.md",
+      "description": "Build, refactor, or review accessible, responsive web frontends using React, TypeScript, and other modern frameworks. Use for UI architecture, component design, routing, forms, state, API integration, browser behavior, performance, and visual quality.",
+      "tags": [
+        "frontend",
+        "react",
+        "typescript",
+        "ui",
+        "web",
+        "accessibility"
+      ]
+    },
+    {
+      "name": "mobile-engineering",
+      "title": "Mobile application engineering",
+      "path": "skills/mobile-engineering/SKILL.md",
+      "description": "Design, implement, test, and release cross-platform or native mobile applications, including Flutter and React Native. Use for mobile UI, app lifecycle, offline behavior, navigation, permissions, push notifications, performance, and store readiness.",
+      "tags": [
+        "mobile",
+        "flutter",
+        "react-native",
+        "ios",
+        "android"
+      ]
+    },
+    {
+      "name": "observability-reliability",
+      "title": "Observability and reliability engineering",
+      "path": "skills/observability-reliability/SKILL.md",
+      "description": "Design, instrument, and operate observable software systems using structured logs, metrics, traces, service objectives, alerting, and incident practices. Use for production readiness, diagnosing failures, reliability improvements, and SLO design.",
+      "tags": [
+        "sre",
+        "observability",
+        "logging",
+        "metrics",
+        "tracing",
+        "slo",
+        "incidents"
+      ]
+    },
+    {
+      "name": "performance-optimization",
+      "title": "Performance engineering and optimization",
+      "path": "skills/performance-optimization/SKILL.md",
+      "description": "Measure, diagnose, and improve application, API, database, frontend, build, and infrastructure performance. Use when latency, throughput, memory, CPU, bundle size, startup time, or operating cost is a material concern.",
+      "tags": [
+        "performance",
+        "profiling",
+        "latency",
+        "capacity",
+        "optimization"
+      ]
+    },
+    {
+      "name": "product-specification",
+      "title": "Product discovery and specification",
+      "path": "skills/product-specification/SKILL.md",
+      "description": "Turn ambiguous product ideas into clear product requirements, user stories, acceptance criteria, scope boundaries, and delivery plans. Use for feature discovery, MVP definition, stakeholder alignment, backlog refinement, and product change proposals.",
+      "tags": [
+        "product",
+        "requirements",
+        "prd",
+        "mvp",
+        "discovery",
+        "acceptance-criteria"
+      ]
+    },
+    {
+      "name": "security-audit",
+      "title": "Security engineering and security audits",
+      "path": "skills/security-audit/SKILL.md",
+      "description": "Assess application, API, infrastructure, identity, dependency, and AI-agent security. Use for authorized security reviews, threat modeling, pre-release audits, penetration-test planning, and remediation verification.",
+      "tags": [
+        "security",
+        "audit",
+        "threat-model",
+        "owasp",
+        "privacy"
+      ]
+    },
+    {
+      "name": "technical-writing",
+      "title": "Technical writing and documentation engineering",
+      "path": "skills/technical-writing/SKILL.md",
+      "description": "Create, audit, and maintain technical documentation, READMEs, API references, runbooks, ADRs, onboarding guides, architecture docs, and release notes. Use when technical information must be accurate, usable, and maintainable.",
+      "tags": [
+        "documentation",
+        "readme",
+        "runbook",
+        "adr",
+        "api-reference"
+      ]
+    },
+    {
+      "name": "testing-strategy",
+      "title": "Software testing strategy",
+      "path": "skills/testing-strategy/SKILL.md",
+      "description": "Design, implement, and improve automated tests across unit, integration, contract, browser, end-to-end, performance, and security layers. Use for new features, bug fixes, regression prevention, CI quality, and flaky-test investigation.",
+      "tags": [
+        "testing",
+        "qa",
+        "unit",
+        "integration",
+        "e2e",
+        "regression",
+        "ci"
+      ]
+    }
   ]
 }
