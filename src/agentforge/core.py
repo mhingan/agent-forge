@@ -224,7 +224,7 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
         try:
             raw = json_file.read_text(encoding="utf-8")
             parsed = _load_json_file(json_file)
-            canonical = json.dumps(parsed, indent=2, ensure_ascii=False, allow_nan=False) + "\\n"
+            canonical = json.dumps(parsed, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
             if raw != canonical:
                 errors.append(f"{json_file.relative_to(root)}: JSON is not pretty-printed (use 2 spaces and a trailing newline)")
         except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
