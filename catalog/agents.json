@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "agents": [
+    {"name":"architect","path":"agents/architect.md","description":"Designs system architecture, evaluates trade-offs, and creates incremental technical plans. Use for new systems, major refactors, service boundaries, and architecture decisions."},
+    {"name":"backend-engineer","path":"agents/backend-engineer.md","description":"Implements and reviews backend services, APIs, integrations, and background processing. Use for Python/FastAPI/Django services, business logic, persistence boundaries, and backend reliability."},
+    {"name":"code-reviewer","path":"agents/code-reviewer.md","description":"Performs independent, evidence-based code reviews for correctness, security, compatibility, and reliability. Use on diffs and pull requests; should report findings rather than edit code."},
+    {"name":"database-engineer","path":"agents/database-engineer.md","description":"Designs and optimizes relational schemas, queries, indexes, transactions, and migrations. Use for PostgreSQL/SQL work, data integrity, performance, and safe schema evolution."},
+    {"name":"devops-engineer","path":"agents/devops-engineer.md","description":"Builds secure, reproducible CI/CD and cloud deployment systems. Use for Docker, Kubernetes, infrastructure configuration, release engineering, and observability."},
+    {"name":"frontend-engineer","path":"agents/frontend-engineer.md","description":"Builds accessible, responsive frontend experiences and TypeScript applications. Use for UI features, component architecture, forms, state, routing, and browser behavior."},
+    {"name":"security-auditor","path":"agents/security-auditor.md","description":"Audits code, APIs, dependencies, and deployment configuration for security risks. Use before releases and when reviewing auth, data handling, trust boundaries, or infrastructure."},
+    {"name":"test-engineer","path":"agents/test-engineer.md","description":"Designs and implements deterministic automated tests across unit, integration, contract, UI, and end-to-end layers. Use for feature validation, regression coverage, and CI reliability."},
+    {"name":"documentation-engineer","path":"agents/documentation-engineer.md","description":"Creates accurate technical documentation, runbooks, ADRs, API guides, onboarding material, and release notes. Use when documenting software behavior or operational procedures."},
+    {"name":"bug-investigator","path":"agents/bug-investigator.md","description":"Finds root causes of complex or intermittent bugs through reproducible experiments and evidence. Use when a symptom crosses components or the cause is unclear."}
+  ]
+}
