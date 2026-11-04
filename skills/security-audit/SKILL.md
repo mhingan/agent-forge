@@ -122,6 +122,15 @@ Recommend the smallest fix that closes the trust-boundary failure. Include negat
 
 Do not perform out-of-scope scans, expose credentials in reports, exploit real users, run destructive tests on production, treat a scanner score as proof, or claim complete security from a partial assessment.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [threat model](references/threat-model.md)
+- [security finding template](references/security-finding-template.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 Provide scope, methodology, findings by severity, evidence, remediation, validation status, exclusions, and residual risk. If no findings are confirmed, state what was actually reviewed and what was not.

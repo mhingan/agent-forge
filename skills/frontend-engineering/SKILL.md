@@ -109,6 +109,15 @@ Provide implementation notes, changed routes/components, states handled, API ass
 
 Avoid giant page components, duplicate sources of truth, untyped API data, inaccessible custom controls, unbounded lists, magic breakpoints, disabling zoom, hover-only interactions, and optimistic mutations without recovery logic.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [frontend review checklist](references/frontend-review-checklist.md)
+- [interaction state matrix](references/interaction-state-matrix.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State what changed, which user journey it improves, responsive/accessibility coverage, tests/build checks run, and remaining limitations.

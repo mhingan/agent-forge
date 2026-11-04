@@ -96,6 +96,15 @@ Run pipeline validation, infrastructure format/validation, policy checks, image/
 
 Avoid mutable latest tags for critical deployments, unreviewed infrastructure applies, long-lived admin tokens, secrets in build logs, production deployment from untrusted branches, missing rollback criteria, unbounded autoscaling, and CI checks that report success while silently skipping failed stages.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [deployment runbook template](references/deployment-runbook-template.md)
+- [pipeline security checklist](references/pipeline-security-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 Summarize pipeline/infrastructure changes, permissions, artifact identity, environment, validation results, rollout/rollback plan, monitoring, and remaining operational risks.

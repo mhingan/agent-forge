@@ -96,6 +96,14 @@ Add a benchmark, regression test, or alert if the bottleneck is likely to return
 
 Do not optimize before measuring, trust one benchmark run, remove validation/security for speed, add speculative caches, overuse memoization, parallelize unbounded work, or claim improvement without comparable evidence.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [performance measurement plan](references/performance-measurement-plan.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State the measured result and confidence, tests run, non-performance regressions checked, and remaining constraints.

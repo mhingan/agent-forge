@@ -133,6 +133,15 @@ Provide architecture/pattern choice, model/provider decision, prompt/output sche
 
 Avoid direct model authority over permissions, arbitrary shell/database tools, unrestricted multi-agent loops, trusting retrieved instructions, unvalidated JSON, logging sensitive prompts, using LLMs for simple deterministic transformations, and claims of guaranteed correctness.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [ai evaluation plan template](references/ai-evaluation-plan-template.md)
+- [rag security checklist](references/rag-security-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State the selected pattern, provider assumptions, tools/permissions, evaluation results, privacy safeguards, cost/latency limits, failure behavior, and known limitations.

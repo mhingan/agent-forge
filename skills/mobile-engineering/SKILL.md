@@ -94,6 +94,15 @@ Verify application ID/bundle ID, version/build number, signing identity, provisi
 
 The feature works across required devices/platforms, handles lifecycle and network failure, enforces server-side authorization, manages permissions safely, is accessible, has meaningful tests, and has documented release implications.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [device validation matrix](references/device-validation-matrix.md)
+- [offline sync contract](references/offline-sync-contract.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State platforms/devices tested, build configuration, lifecycle/offline cases, accessibility checks, tests, signing/release status, and unverified device-specific behavior.
