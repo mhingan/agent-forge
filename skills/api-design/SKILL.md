@@ -134,6 +134,15 @@ Produce an API contract with examples, error model, auth matrix, idempotency/ret
 
 Avoid generic success responses for every outcome, ambiguous boolean flags, undocumented nulls, unbounded collection endpoints, leaking internal exception text, client-only authorization, arbitrary SQL sorting, and accepted-job responses without a way to inspect completion.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [api contract template](references/api-contract-template.md)
+- [webhook security checklist](references/webhook-security-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 List operations and schemas changed, compatibility impact, authorization behavior, error/retry model, tests executed, generated artifacts updated, and any assumptions or migration steps.

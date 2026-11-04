@@ -131,6 +131,15 @@ Cover success, validation failure, authorization failure, not found, conflict, d
 
 Do not swallow exceptions, return fake success, hardcode credentials, trust UI-only checks, create hidden global mutable state, retry non-idempotent calls blindly, or mark an async job complete when it has merely been queued.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [backend readiness checklist](references/backend-readiness-checklist.md)
+- [external integration pattern](references/external-integration-pattern.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 Summarize behavior, interfaces, data changes, authorization, operations and migration impact, tests run with results, and any residual risks.

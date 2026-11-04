@@ -133,6 +133,15 @@ Before finalizing, verify that:
 
 Do not introduce microservices, Kubernetes, Kafka, Redis, GraphQL, a service mesh, or a new ORM merely because they are popular. Do not equate horizontal scaling with reliability. Do not add caches without invalidation semantics. Do not create an abstraction before there are multiple real use cases. Do not hide unknown requirements behind precise-looking diagrams.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [architecture decision record](references/architecture-decision-record.md)
+- [architecture review checklist](references/architecture-review-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State the chosen design, why it fits, alternatives rejected, files or decisions changed, validation performed, migration implications, and unresolved risks. Clearly distinguish an implemented architecture from a proposal.

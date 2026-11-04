@@ -99,6 +99,14 @@ For production incidents, verify the service and data state with read-only check
 
 Avoid changing multiple unrelated variables, catching and ignoring exceptions, returning fake success, retrying non-idempotent work, deleting evidence, disabling authorization or validation, and blaming a dependency without a reproducing test.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [incident investigation template](references/incident-investigation-template.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 Report the verified cause, evidence, code/data/config changes, regression coverage, commands run, production actions (if authorized), and residual uncertainty. Explicitly say when the investigation is inconclusive.

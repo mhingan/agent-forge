@@ -119,6 +119,14 @@ A finding is ready only when a maintainer can locate it, understand the trigger,
 
 Do not report formatting as a defect unless it causes an actual problem. Do not demand refactors unrelated to the change. Do not claim a security issue without a concrete trust boundary or attack path. Do not state that the whole system is safe after a narrow diff review.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [review checklist](references/review-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 Return findings first, sorted by severity, followed by the review scope, checks performed, and residual risk. Be explicit about tests not run.

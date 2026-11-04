@@ -117,6 +117,15 @@ Verify correctness with constraints and tests, inspect query plans for performan
 
 Never run production DDL or mass updates without approval. Avoid unbounded selects, N+1 access, arbitrary dynamic SQL, implicit transaction assumptions, long-held locks, duplicated authoritative data, undocumented time-zone rules, and irreversible migrations disguised as reversible deploys.
 
+## Supporting reference material
+
+Load these resources when the task needs a reusable template or deeper checklist:
+- [migration plan template](references/migration-plan-template.md)
+- [query review checklist](references/query-review-checklist.md)
+
+The procedure and quality gates in this SKILL.md remain the primary workflow.
+
+
 ## Completion report
 
 State schema/query changes, data impact, migration sequence, test/plan validation, measured results, backup/recovery implications, and residual risk.
