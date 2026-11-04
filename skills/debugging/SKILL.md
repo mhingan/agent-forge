@@ -1,40 +1,104 @@
 ---
 name: debugging
-description: Investigate defects and unexpected behavior systematically using logs, traces, code, reproduction steps, and tests. Use when a bug is intermittent, unclear, or spans multiple components.
+description: Investigate defects, failed builds, unexpected output, production incidents, and intermittent behavior using reproducible experiments and evidence. Use when symptoms are unclear, cross components, or require root-cause analysis.
 license: MIT
 ---
 
 # Debugging and root-cause analysis
 
-## Goal
-Find the smallest evidence-backed explanation for the observed behavior, then implement or recommend a safe correction.
+## Mission
 
-## Investigation procedure
-1. Restate the symptom, expected behavior, actual behavior, impact, and first known occurrence.
-2. Separate confirmed facts, hypotheses, and unknowns.
-3. Reproduce with the smallest reliable case. Capture environment, input, state, timing, and relevant versions without exposing secrets.
-4. Trace the execution path through logs, stack traces, requests, state transitions, and dependencies.
-5. Form one testable hypothesis at a time. Prefer experiments that distinguish competing causes.
-6. Check recent code/config/dependency/data changes and compare working versus failing environments.
-7. Identify the root cause, not only the visible failure point.
-8. Implement the narrowest fix that addresses the root cause without masking errors.
-9. Add a regression test that fails before the fix and passes after it.
-10. Verify related paths and report remaining uncertainty.
+Find the smallest evidence-backed explanation for the observed behavior, then implement or recommend a correction that prevents recurrence. Do not treat suppressing an error message as fixing the defect.
 
-## Observability guidance
-- Correlate events using request/job IDs and timestamps.
-- Redact tokens, passwords, session cookies, personal data, and secrets from logs.
-- Distinguish client errors, application defects, infrastructure failures, and dependency failures.
-- Check retries and queue redelivery before concluding a request happened only once.
+## 1. Establish the problem
 
-## Output
-- Reproduction steps
-- Evidence collected
-- Root cause and causal chain
-- Fix or recommended action
-- Regression coverage
-- Verification performed
-- Residual risks / open questions
+Capture:
+- Expected behavior and the exact observed behavior.
+- User/system impact, frequency, severity, and affected environments.
+- First known occurrence and recent code, configuration, dependency, data, or infrastructure changes.
+- Exact inputs, identifiers, timestamps, request/job IDs, and reproduction sequence.
+- Whether the issue is deterministic, intermittent, load-dependent, or environment-specific.
 
-## Guardrails
-Do not randomly change multiple variables, suppress exceptions, disable security controls, or delete data to make an error disappear. Ask before restarting production services or modifying production data.
+Keep facts, hypotheses, and unknowns separate. Never include credentials, session tokens, or sensitive customer payloads in diagnostic notes.
+
+## 2. Preserve evidence and scope
+
+Before changing anything:
+- Inspect repository status and preserve existing user modifications.
+- Read the full error/stack trace, not just the last line.
+- Capture relevant logs, metrics, traces, deployment versions, and configuration names.
+- Compare a working and failing environment when available.
+- Determine whether a rollback, restart, replay, data repair, or external action would change evidence.
+
+For production incidents, prefer read-only inspection first. Ask before restarting services, replaying messages, changing production data, disabling controls, or performing a rollback.
+
+## 3. Reproduce the failure
+
+Reduce the issue to the smallest reliable input and execution path. Remove unrelated variables while preserving the failure. Record the runtime version, platform, dependency versions, feature flags, timezone, locale, and relevant state.
+
+If the failure cannot be reproduced locally, create a safe diagnostic experiment that narrows the cause. Do not claim a bug is fixed because it did not happen once after a change.
+
+## 4. Form and test hypotheses
+
+For each hypothesis, state:
+- Evidence supporting it.
+- Evidence against it.
+- A test that would distinguish it from competing causes.
+- The expected observation if the hypothesis is true.
+
+Change one major variable at a time. Prefer binary-searching a regression range, isolating a dependency, or adding temporary instrumentation over random edits. Keep diagnostic changes minimal and remove them after use.
+
+## 5. Trace the causal chain
+
+Follow the execution path across layers:
+1. Input parsing and validation.
+2. Authentication and authorization.
+3. Business logic and state transitions.
+4. Database/cache/queue reads and writes.
+5. Network calls and external services.
+6. Serialization, UI rendering, and final response.
+7. Retry, timeout, cancellation, and cleanup behavior.
+
+For distributed systems, align clocks and correlation IDs, distinguish event time from processing time, and check duplicate delivery, reordering, retries, and partial failure. For frontend defects, inspect browser console, network requests, viewport, device/browser differences, stale state, and asynchronous races.
+
+## 6. Identify root cause and blast radius
+
+A root cause explains why the incorrect state was produced, not merely where the process crashed. Determine:
+- Why existing validation or tests did not catch it.
+- Which users, records, environments, or versions are affected.
+- Whether data was lost, duplicated, leaked, or left inconsistent.
+- Whether the bug is still active or only affects historical data.
+- Whether dependent systems or queued jobs need reconciliation.
+
+Distinguish trigger, root cause, contributing factors, and detection gap.
+
+## 7. Fix and prevent recurrence
+
+Prefer the smallest change that restores the intended invariant. Avoid special-casing one example unless the actual contract requires it. Add a regression test that fails before the fix and passes after it. If the cause is missing observability, add a bounded, safe signal. If the defect is data-related, provide a separately reviewed repair plan.
+
+For high-impact changes, define rollout, monitoring, rollback, and recovery conditions before release.
+
+## 8. Verification
+
+Run the narrowest relevant test first, then broader tests and static checks. Reproduce the original case after the fix. Test an adjacent boundary case and the primary failure path. Inspect the final diff for debug code, disabled checks, temporary credentials, and unrelated modifications.
+
+For production incidents, verify the service and data state with read-only checks and confirm impact has stopped. Do not equate a healthy process with corrected business data.
+
+## Diagnostic output format
+
+1. **Symptom:** expected versus actual.
+2. **Scope:** affected versions, users, systems, and time window.
+3. **Evidence:** logs, trace, source locations, reproduction.
+4. **Root cause:** causal chain with confidence.
+5. **Contributing factors:** detection and prevention gaps.
+6. **Correction:** code/config/data action and risk.
+7. **Verification:** exact commands/checks and outcomes.
+8. **Recovery:** data reconciliation, rollout, or follow-up needed.
+
+## Anti-patterns
+
+Avoid changing multiple unrelated variables, catching and ignoring exceptions, returning fake success, retrying non-idempotent work, deleting evidence, disabling authorization or validation, and blaming a dependency without a reproducing test.
+
+## Completion report
+
+Report the verified cause, evidence, code/data/config changes, regression coverage, commands run, production actions (if authorized), and residual uncertainty. Explicitly say when the investigation is inconclusive.
