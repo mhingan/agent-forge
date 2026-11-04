@@ -36,7 +36,7 @@ def resolve_path(raw: str, home: Path) -> Path:
 TARGETS = {
     "claude": Target("claude", "Claude Code", ".claude/skills", "~/.claude/skills", ".claude/agents", "~/.claude/agents", "claude-markdown"),
     "codex": Target("codex", "OpenAI Codex", ".agents/skills", "~/.agents/skills", ".codex/agents", "~/.codex/agents", "codex-toml"),
-    "copilot": Target("copilot", "GitHub Copilot", ".github/skills", "~/.copilot/skills", ".github/agents", "~/.github/agents", "copilot-agent-md"),
+    "copilot": Target("copilot", "GitHub Copilot", ".github/skills", "~/.copilot/skills", ".github/agents", "~/.copilot/agents", "copilot-agent-md"),
     "gemini": Target("gemini", "Gemini CLI", ".agents/skills", "~/.agents/skills", ".gemini/agents", "~/.gemini/agents", "gemini-markdown"),
     "antigravity": Target("antigravity", "Google Antigravity IDE", ".agents/skills", "~/.gemini/config/skills", ".agents/agents", "~/.gemini/config/agents", "antigravity-markdown"),
     "antigravity-cli": Target("antigravity-cli", "Google Antigravity CLI", ".agents/skills", "~/.gemini/antigravity-cli/skills", ".agents/agents", "~/.gemini/config/agents", "antigravity-markdown"),

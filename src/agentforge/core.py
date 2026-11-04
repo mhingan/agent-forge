@@ -103,7 +103,7 @@ def _is_managed_location(path: Path, root: Path, scope: str) -> bool:
             ".codex/agents/", ".copilot/skills/", ".copilot/agents/",
             ".gemini/skills/", ".gemini/agents/",
             ".gemini/config/skills/", ".gemini/config/agents/", ".gemini/config/rules/",
-            ".gemini/antigravity-cli/skills/", ".github/agents/",
+            ".gemini/antigravity-cli/skills/", ".copilot/agents/",
         )
         exact = set()
     return relative in exact or any(relative.startswith(prefix) for prefix in allowed)

@@ -12,7 +12,7 @@ The following mappings were checked against official product documentation on 20
 |---|---|---|---|---|
 | Claude Code | `.claude/skills/` | `~/.claude/skills/` | `.claude/agents/*.md`; global `~/.claude/agents/*.md` | `CLAUDE.md`; global user instructions supported by Claude Code |
 | OpenAI Codex | `.agents/skills/` | `~/.agents/skills/` | `.codex/agents/*.toml`; global `~/.codex/agents/*.toml` | `AGENTS.md`; global Codex instructions |
-| GitHub Copilot | `.github/skills/` (Copilot also recognizes `.claude/skills/` and `.agents/skills/` in supported surfaces) | `~/.copilot/skills/` | `.github/agents/*.agent.md`; global support varies by Copilot surface | `.github/copilot-instructions.md`; optional path-scoped instructions |
+| GitHub Copilot | `.github/skills/` (Copilot also recognizes `.claude/skills/` and `.agents/skills/` in supported surfaces) | `~/.copilot/skills/` | `.github/agents/*.agent.md`; Copilot CLI user-level `~/.copilot/agents/*.agent.md` | `.github/copilot-instructions.md`; optional path-scoped instructions |
 | Gemini CLI | `.gemini/skills/` or interoperable `.agents/skills/` | `~/.gemini/skills/` or `~/.agents/skills/` | `.gemini/agents/*.md`; global `~/.gemini/agents/*.md` | `GEMINI.md` and imported context files |
 | Antigravity IDE | `.agents/skills/` | `~/.gemini/config/skills/` | `.agents/agents/*.md`; global `~/.gemini/config/agents/*.md` | `AGENTS.md`, `GEMINI.md`, `.agents/rules/*.md` |
 | Antigravity CLI | `.agents/skills/` | `~/.gemini/antigravity-cli/skills/` (CLI-specific discovery can vary) | `.agents/agents/*.md`; global config path is version-dependent | `AGENTS.md`, `GEMINI.md`, `.agents/rules/*.md` |
