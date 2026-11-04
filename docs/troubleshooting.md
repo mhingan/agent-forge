@@ -83,7 +83,7 @@ See [compatibility](compatibility.md). Report provider discovery as unverified u
 Run focused tests first:
 
 ```bash
-python -m unittest tests.test_agentforge.AdapterTests -v
+python -m unittest discover -s tests -p 'test_agentforge.py' -v
 python -m unittest discover -s tests -v
 ```
 

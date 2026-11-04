@@ -33,4 +33,4 @@ Before production, confirm authorization, backup/restore capability, maintenance
 Verify application compatibility, data reconciliation, lock/replication/latency/error metrics, and backup status. Record actual duration, unexpected behavior, and cleanup deferred to later releases.
 
 ## Required migration plan
-Link the template at [migration-plan-template.md](../skills/database-engineering/references/migration-plan-template.md) when this playbook is installed inside AgentForge documentation, or use the adjacent database-engineering skill resource in the repository. State clearly when a rollback is not possible because data was discarded.
+Use the reusable template at `skills/database-engineering/references/migration-plan-template.md` in the AgentForge source repository, or open the equivalent reference installed with the database-engineering skill. State clearly when a rollback is not possible because data was discarded.
