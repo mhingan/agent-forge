@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import tempfile
@@ -13,7 +14,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-from agentforge.adapters import render_agent  # noqa: E402
+from agentforge.adapters import render_agent, render_antigravity_rule  # noqa: E402
 from agentforge.core import install, uninstall, validate_repository, _parse_agents  # noqa: E402
 
 
@@ -21,9 +22,32 @@ class ValidationTests(unittest.TestCase):
     def test_repository_validates(self):
         self.assertEqual(validate_repository(REPO, strict=True), [])
 
+    def test_catalogs_cover_all_skills_and_agents(self):
+        skills = json.loads((REPO / "catalog/skills.json").read_text(encoding="utf-8"))
+        agents = json.loads((REPO / "catalog/agents.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(skills["skills"]), len(list((REPO / "skills").glob("*/SKILL.md"))))
+        self.assertEqual(len(agents["agents"]), len(list((REPO / "agents").glob("*.md"))))
+        self.assertGreaterEqual(len(agents["agents"]), 15)
+
+    def test_all_json_files_are_valid_and_pretty_printed(self):
+        for path in sorted(REPO.rglob("*.json")):
+            with self.subTest(path=path.relative_to(REPO)):
+                raw = path.read_text(encoding="utf-8")
+                parsed = json.loads(raw)
+                self.assertEqual(raw, json.dumps(parsed, indent=2, ensure_ascii=False) + "\n")
+
+    def test_skill_reference_links_resolve(self):
+        import re
+        for skill_file in sorted((REPO / "skills").glob("*/SKILL.md")):
+            body = skill_file.read_text(encoding="utf-8")
+            links = re.findall(r"\[[^\]]+\]\((?!https?://|mailto:)([^)#]+)(?:#[^)]*)?\)", body)
+            for link in links:
+                with self.subTest(skill=skill_file.parent.name, link=link):
+                    self.assertTrue((skill_file.parent / link).exists())
+
     def test_every_skill_has_metadata(self):
         skills = sorted((REPO / "skills").glob("*/SKILL.md"))
-        self.assertGreaterEqual(len(skills), 10)
+        self.assertGreaterEqual(len(skills), 18)
         for skill in skills:
             text = skill.read_text(encoding="utf-8")
             self.assertTrue(text.startswith("---\n"), skill)
@@ -32,6 +56,29 @@ class ValidationTests(unittest.TestCase):
 
 
 class AdapterTests(unittest.TestCase):
+    def test_all_agent_profiles_render_for_every_target(self):
+        agent_files = sorted((REPO / "agents").glob("*.md"))
+        self.assertGreaterEqual(len(agent_files), 15)
+        for source in agent_files:
+            for target in ["claude", "codex", "copilot", "gemini", "antigravity", "antigravity-cli"]:
+                with self.subTest(agent=source.stem, target=target):
+                    filename, rendered = render_agent(target, source)
+                    self.assertTrue(filename)
+                    self.assertIn(source.stem.replace("-", "_").split("_")[0], rendered.lower())
+                    if target == "codex" and tomllib is not None:
+                        parsed = tomllib.loads(rendered)
+                        self.assertTrue(parsed["name"])
+                        self.assertTrue(parsed["description"])
+                        self.assertTrue(parsed["developer_instructions"])
+
+    def test_antigravity_rule_frontmatter_has_valid_trigger(self):
+        valid = {"always_on", "model_decision", "glob", "manual"}
+        for rule_file in sorted((REPO / "rules").glob("*.md")):
+            rendered = render_antigravity_rule(rule_file)
+            frontmatter = rendered.split("---", 2)[1]
+            self.assertTrue(any(f"trigger: {trigger}" in frontmatter for trigger in valid), rule_file)
+            self.assertIn("description:", frontmatter, rule_file)
+
     def test_renders_all_native_agent_formats(self):
         source = REPO / "agents" / "code-reviewer.md"
         expected = {
@@ -79,6 +126,52 @@ class InstallTests(unittest.TestCase):
             manifest = json.loads((destination / ".agentforge" / "install-manifest.json").read_text())
             references = [x for x in manifest["installations"] if x["path"].endswith(".agents/skills/code-review")]
             self.assertEqual({x["target"] for x in references}, {"codex", "gemini", "antigravity"})
+
+    def test_force_preserves_modified_agentforge_managed_content(self):
+        with tempfile.TemporaryDirectory() as temp:
+            destination = Path(temp)
+            install(
+                agent_arg="claude",
+                scope="project",
+                skills=["code-review"],
+                components=["skills"],
+                destination=destination,
+            )
+            skill_path = destination / ".claude" / "skills" / "code-review" / "SKILL.md"
+            original = skill_path.read_text(encoding="utf-8")
+            custom = original + "\n# Local customization that must survive refresh\n"
+            skill_path.write_text(custom, encoding="utf-8")
+            messages = install(
+                agent_arg="claude",
+                scope="project",
+                skills=["code-review"],
+                components=["skills"],
+                destination=destination,
+                force=True,
+            )
+            self.assertEqual(skill_path.read_text(encoding="utf-8"), custom)
+            self.assertTrue(any("local edits preserved" in message for message in messages))
+
+    def test_uninstall_refuses_paths_outside_managed_locations(self):
+        with tempfile.TemporaryDirectory() as temp:
+            destination = Path(temp)
+            unrelated = destination / "important-user-file.txt"
+            unrelated.write_text("keep this file", encoding="utf-8")
+            manifest_path = destination / ".agentforge" / "install-manifest.json"
+            manifest_path.parent.mkdir(parents=True)
+            manifest_path.write_text(json.dumps({
+                "version": 1,
+                "installations": [{
+                    "target": "claude",
+                    "kind": "skill",
+                    "name": "unexpected",
+                    "path": str(unrelated.resolve()),
+                    "sha256": hashlib.sha256(unrelated.read_bytes()).hexdigest(),
+                }],
+            }, indent=2) + "\n", encoding="utf-8")
+            messages = uninstall(agent_arg="claude", scope="project", destination=destination)
+            self.assertTrue(unrelated.exists())
+            self.assertTrue(any("unsafe manifest path" in message for message in messages))
 
     def test_uninstall_preserves_modified_content(self):
         with tempfile.TemporaryDirectory() as temp:
