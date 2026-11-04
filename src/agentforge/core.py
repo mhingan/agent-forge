@@ -177,7 +177,7 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
                     errors.append(f"{rel}: contains TODO/FIXME marker")
                 if len(content.splitlines()) > 500:
                     errors.append(f"{rel}: exceeds 500 lines; move deep reference material into references/")
-                for relative in re.findall(r"\\[[^\\]]+\\]\\((?!https?://|mailto:)([^)#]+)(?:#[^)]*)?\\)", content):
+                for relative in re.findall(r"\[[^\]]+\]\((?!https?://|mailto:)([^)#]+)(?:#[^)]*)?\)", content):
                     if not (folder / relative).exists():
                         errors.append(f"{rel}: broken local reference link '{relative}'")
 
