@@ -2,102 +2,133 @@
 
 **A vendor-neutral toolkit for building, validating, and distributing AI coding-agent skills, specialist agents, rules, and workflows.**
 
-Write reusable expertise once. Install it into the native layout of the AI coding agents you use.
+> Write reusable expertise once. Install it into the native layout of the agents you use.
+
+AgentForge is an open-source starter repository and local CLI. The canonical content lives in this repository; adapters materialize it into each tool's supported project or user directory.
 
 ## Supported targets
 
-| Target | Skills | Specialist agents | Instructions |
+| Target | Skills | Specialist agents | Persistent instructions |
 |---|---|---|---|
-| Claude Code | `.claude/skills/` | `.claude/agents/` | `CLAUDE.md` |
-| OpenAI Codex | `.agents/skills/` | `.codex/agents/` | `AGENTS.md` |
-| GitHub Copilot | `.github/skills/` | `.github/agents/` | `.github/copilot-instructions.md` |
-| Gemini CLI | `.agents/skills/` | `.gemini/agents/` | `GEMINI.md` |
-| Google Antigravity | `.agents/skills/` | `.agents/agents/` | `AGENTS.md`, `.agents/rules/` |
+| Claude Code | `.claude/skills/` | `.claude/agents/*.md` | `CLAUDE.md` |
+| OpenAI Codex | `.agents/skills/` | `.codex/agents/*.toml` | `AGENTS.md` |
+| GitHub Copilot | `.github/skills/` | `.github/agents/*.agent.md` | `.github/copilot-instructions.md` |
+| Gemini CLI | `.agents/skills/` | `.gemini/agents/*.md` | `GEMINI.md` |
+| Google Antigravity IDE / CLI | `.agents/skills/` | `.agents/agents/*.md` | `AGENTS.md`, `GEMINI.md`, `.agents/rules/*.md` |
 
-Portable skills follow the open [Agent Skills](https://agentskills.io/) format. See [compatibility notes](docs/compatibility.md) for product-specific behavior and limitations.
+Skills follow the open [Agent Skills](https://agentskills.io/) directory format (`SKILL.md` with YAML frontmatter). Supported locations can vary by product/version; see [compatibility notes](docs/compatibility.md) and official links there. Codex, Gemini CLI, and Antigravity can share `.agents/skills/` at project scope; AgentForge avoids writing duplicate copies to that shared directory.
 
 ## Quick start
 
-Requires Python 3.10+. The CLI uses the Python standard library.
+Requirements: Python 3.10 or newer. The installer uses only the Python standard library.
 
 ```bash
-git clone https://github.com/mhingan/agent-forge.git
-cd agent-forge
-
+# 1. Download or clone this repository
+# 2. From the repository root:
 python -m agentforge validate
 python -m agentforge list
+
+# Install all skills and native agent profiles into the current project
 python -m agentforge install --agent all --scope project
+
+# Install only selected skills for Claude Code and Codex
+python -m agentforge install --agent claude,codex --skill code-review --skill security-audit
+
+# Show target paths and detected tools
 python -m agentforge doctor
 ```
 
-Install selected skills:
-
-```bash
-python -m agentforge install \
-  --agent claude,codex \
-  --skill code-review \
-  --skill security-audit
-```
-
-Install globally:
+For a global installation:
 
 ```bash
 python -m agentforge install --agent all --scope global
 ```
 
-## What's included
+Global mode installs skills and native specialist-agent profiles. It does not overwrite global instruction files; project rules/workflows are installed in project scope only.
 
-- **13 portable skills** covering architecture, API design, backend/frontend engineering, databases, debugging, code review, security, testing, DevOps, performance, AI integration, and technical writing.
-- **10 specialist-agent profiles** with native renderers for Claude Code, Codex, GitHub Copilot, Gemini CLI, and Antigravity.
-- **Reusable rules** for engineering fundamentals, security, Git, Python, TypeScript, and APIs.
-- **5 delivery workflows** for feature development, bug investigation, pull-request review, release readiness, and database migrations.
-- **Prompt recipes** for common development tasks.
-- **Python CLI** for listing, validating, installing, uninstalling, generating, and inspecting configurations.
-- **GitHub Actions CI** and automated tests.
+### Optional: install as a CLI
 
-## CLI
+```bash
+python -m pip install .
+agentforge validate
+agentforge install --agent all --scope project
+```
+
+## What is included
+
+- **13 portable skills** for architecture, API design, backend/frontend engineering, database work, debugging, code review, security, testing, DevOps, performance, AI integration, and technical writing.
+- **10 specialist-agent profiles** with native renderers for Claude Code, Codex, GitHub Copilot, Gemini CLI, and Google Antigravity.
+- **Layered rules** for universal engineering practices, security, Git, Python, TypeScript, and APIs.
+- **Repeatable workflows** for feature delivery, bug investigation, pull-request review, release readiness, and database migrations.
+- **Prompt recipes** for common one-shot tasks.
+- **CLI tooling** to list, validate, install, uninstall, generate, and inspect the local setup.
+- **CI validation** for Agent Skills metadata, repository structure, package-data synchronization, and Python tests.
+
+## CLI commands
 
 | Command | Purpose |
 |---|---|
-| `list` | List skills, agents, or supported targets |
-| `validate --strict` | Validate skill metadata and repository consistency |
-| `install` | Install selected components for one or more agents |
-| `uninstall` | Remove AgentForge-managed files safely |
-| `generate` | Render native agent profiles and instruction files |
-| `doctor` | Inspect supported paths and detected agent CLIs |
+| `list [skills\|agents\|targets]` | List the repository catalog |
+| `validate [--strict]` | Validate skill metadata and project files |
+| `install` | Install skills, agent profiles, rules, and workflows |
+| `uninstall` | Remove AgentForge-managed files without deleting locally modified installs |
+| `generate` | Render native agent profiles and project instruction files |
+| `doctor` | Show supported paths, Python version, and detected CLIs |
 
-Run `python -m agentforge --help` for all options.
+Run `python -m agentforge --help` or `python -m agentforge install --help` for full options.
+
+### Install options
+
+```bash
+python -m agentforge install \
+  --agent claude,codex,copilot,gemini,antigravity \
+  --scope project \
+  --skill backend-engineering \
+  --skill testing-strategy
+
+# Preview without writing files
+python -m agentforge install --agent all --scope project --dry-run
+
+# Refresh files previously installed and tracked by AgentForge
+python -m agentforge install --agent all --scope project --force
+
+# Include/exclude components
+python -m agentforge install --agent all --scope project --components skills,agents,rules,workflows
+```
+
+`--force` refreshes AgentForge-managed files. An existing destination not recorded as AgentForge-managed is left untouched, even with `--force`.
 
 ## Repository layout
 
 ```text
-skills/       Portable Agent Skills (canonical source)
-agents/       Provider-neutral specialist-agent definitions
-rules/        Reusable engineering rules
-workflows/    Multi-step delivery playbooks
-commands/     Reusable prompt recipes
-adapters/     Native target mappings and compatibility notes
-templates/    Starter templates for skills and agents
-catalog/      Machine-readable catalogs
-scripts/      Package-data synchronization and maintenance
-src/          Python CLI and embedded package assets
-tests/        Automated tests
-docs/         Architecture, security, authoring, and compatibility guides
+skills/           Portable Agent Skills (canonical source)
+agents/           Provider-neutral specialist-agent definitions
+rules/             Reusable engineering rules
+workflows/         Multi-step delivery playbooks
+commands/          Reusable prompt recipes
+adapters/          Target mapping and output-format documentation
+templates/         Starter files for new skills and agents
+catalog/           Machine-readable catalog
+scripts/           Package-data synchronization and maintenance scripts
+src/agentforge/    Python CLI, installation engine, and embedded package assets
+tests/             Automated tests
+docs/              Compatibility, security, authoring, and architecture docs
 ```
 
-## Security
+## Security model
 
-Agent instructions and scripts influence tool behavior. Review content before installation. AgentForge copies reviewed files; it does not install MCP servers, grant permissions, configure credentials, or execute skill scripts. Never commit secrets or private project data. See [SECURITY.md](SECURITY.md).
+Agent instructions and scripts are executable influence, not harmless documentation. Review all content before installation. AgentForge does not install MCP servers, grant permissions, add API keys, or execute skill scripts. It copies reviewed files only. Never commit secrets, personal tokens, or private project data to this repository. See [SECURITY.md](SECURITY.md).
 
-## Development
+## Contributing
+
+Add skills under `skills/<name>/SKILL.md`, add specialist definitions under `agents/`, update catalog metadata, and run:
 
 ```bash
 python -m agentforge validate --strict
 python -m unittest discover -s tests -v
-python scripts/sync_package_data.py
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md). When changing canonical content (skills, agents, rules, workflows, docs, or catalog files), run `python scripts/sync_package_data.py` before building a wheel; CI checks that the embedded package copy is in sync.
 
 ## License
 
