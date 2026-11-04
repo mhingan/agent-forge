@@ -113,6 +113,10 @@ python -m pip install -e .
 
 See [PyPI publishing](docs/publishing.md) for maintainer release instructions.
 
+## Forge Runtime integration
+
+AgentForge provides the specialist roles and reusable skills used by [Forge Runtime](https://github.com/mhingan/forge-runtime). The `forge-runner` profile coordinates end-to-end delivery and uses the local Forge MCP Gateway when it is available. Install the runtime separately with `python -m pip install forge-agent-runtime`, then run `forge setup --ide copilot` to register the local gateway and Copilot agent profile. Secrets belong in the operating-system credential vault, not in chat or repository files.
+
 ## The library
 
 ### Skills

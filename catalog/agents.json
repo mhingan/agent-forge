@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "catalog_version": "1.1.0",
+  "catalog_version": "1.2.0",
   "description": "Index of provider-neutral specialist roles. Platform adapters render each profile into the target's native format; tool permissions remain subject to the host application's policies.",
   "agents": [
     {
@@ -146,6 +146,28 @@
       "tags": [
         "documentation",
         "engineer"
+      ]
+    },
+    {
+      "name": "forge-runner",
+      "title": "Forge Runner — delivery coordinator",
+      "path": "agents/forge-runner.md",
+      "description": "Coordinates end-to-end software delivery through Forge Runtime, specialist AgentForge roles, and user-approved MCP integrations. Delegate complete application builds, multi-service integrations, testing, and deployment preparation here.",
+      "recommended_skills": [
+        "product-specification",
+        "architecture",
+        "ai-integration",
+        "backend-engineering",
+        "frontend-engineering",
+        "devops-cloud",
+        "security-audit",
+        "testing-strategy"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "orchestration",
+        "delivery",
+        "mcp"
       ]
     },
     {
