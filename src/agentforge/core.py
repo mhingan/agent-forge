@@ -491,6 +491,10 @@ def uninstall(agent_arg: str = "all", scope: str = "project", skills: list[str] 
             continue
         entries_for_path = [item for item in removing if item.get("path") == raw]
         expected = entries_for_path[0].get("sha256") if entries_for_path else None
+        if not _is_managed_location(path, root, scope):
+            messages.append(f"SKIP unsafe manifest path (outside AgentForge-managed locations): {path}")
+            preserved_modified.extend(entries_for_path)
+            continue
         if not path.exists():
             messages.append(f"ALREADY ABSENT: {path}")
             continue
