@@ -1,15 +1,248 @@
 {
   "schema_version": 1,
+  "catalog_version": "1.1.0",
+  "description": "Index of provider-neutral specialist roles. Platform adapters render each profile into the target's native format; tool permissions remain subject to the host application's policies.",
   "agents": [
-    {"name":"architect","path":"agents/architect.md","description":"Designs system architecture, evaluates trade-offs, and creates incremental technical plans. Use for new systems, major refactors, service boundaries, and architecture decisions."},
-    {"name":"backend-engineer","path":"agents/backend-engineer.md","description":"Implements and reviews backend services, APIs, integrations, and background processing. Use for Python/FastAPI/Django services, business logic, persistence boundaries, and backend reliability."},
-    {"name":"code-reviewer","path":"agents/code-reviewer.md","description":"Performs independent, evidence-based code reviews for correctness, security, compatibility, and reliability. Use on diffs and pull requests; should report findings rather than edit code."},
-    {"name":"database-engineer","path":"agents/database-engineer.md","description":"Designs and optimizes relational schemas, queries, indexes, transactions, and migrations. Use for PostgreSQL/SQL work, data integrity, performance, and safe schema evolution."},
-    {"name":"devops-engineer","path":"agents/devops-engineer.md","description":"Builds secure, reproducible CI/CD and cloud deployment systems. Use for Docker, Kubernetes, infrastructure configuration, release engineering, and observability."},
-    {"name":"frontend-engineer","path":"agents/frontend-engineer.md","description":"Builds accessible, responsive frontend experiences and TypeScript applications. Use for UI features, component architecture, forms, state, routing, and browser behavior."},
-    {"name":"security-auditor","path":"agents/security-auditor.md","description":"Audits code, APIs, dependencies, and deployment configuration for security risks. Use before releases and when reviewing auth, data handling, trust boundaries, or infrastructure."},
-    {"name":"test-engineer","path":"agents/test-engineer.md","description":"Designs and implements deterministic automated tests across unit, integration, contract, UI, and end-to-end layers. Use for feature validation, regression coverage, and CI reliability."},
-    {"name":"documentation-engineer","path":"agents/documentation-engineer.md","description":"Creates accurate technical documentation, runbooks, ADRs, API guides, onboarding material, and release notes. Use when documenting software behavior or operational procedures."},
-    {"name":"bug-investigator","path":"agents/bug-investigator.md","description":"Finds root causes of complex or intermittent bugs through reproducible experiments and evidence. Use when a symptom crosses components or the cause is unclear."}
+    {
+      "name": "accessibility-specialist",
+      "title": "Accessibility specialist",
+      "path": "agents/accessibility-specialist.md",
+      "description": "Audits and improves inclusive UX, semantic structure, keyboard behavior, screen-reader interaction, forms, focus management, contrast, responsive accessibility, and WCAG-aligned quality.",
+      "recommended_skills": [
+        "accessibility-ux",
+        "frontend-engineering"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "accessibility",
+        "specialist"
+      ]
+    },
+    {
+      "name": "architect",
+      "title": "Software architect",
+      "path": "agents/architect.md",
+      "description": "Designs system architecture, evaluates alternatives, maps domain and data ownership, and creates incremental technical plans. Delegate here for new systems, major refactors, service boundaries, scalability, migration, and architecture decision records.",
+      "recommended_skills": [
+        "architecture",
+        "backend-engineering",
+        "database-engineering",
+        "devops-cloud",
+        "security-audit"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "architect"
+      ]
+    },
+    {
+      "name": "backend-engineer",
+      "title": "Senior backend engineer",
+      "path": "agents/backend-engineer.md",
+      "description": "Implements production backend services, APIs, business logic, persistence, and integrations with secure validation, authorization, observability, and tests. Delegate backend features, Python/FastAPI/Django/Node services, background jobs, and reliability fixes here.",
+      "recommended_skills": [
+        "backend-engineering",
+        "api-design",
+        "database-engineering",
+        "testing-strategy"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "backend",
+        "engineer"
+      ]
+    },
+    {
+      "name": "bug-investigator",
+      "title": "Debugging and root-cause investigator",
+      "path": "agents/bug-investigator.md",
+      "description": "Finds root causes of complex, intermittent, cross-layer, or production defects using reproducible experiments and evidence. Delegate failed builds, unexplained errors, race conditions, data inconsistencies, and environment-specific failures here.",
+      "recommended_skills": [
+        "debugging",
+        "observability-reliability",
+        "testing-strategy"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "bug",
+        "investigator"
+      ]
+    },
+    {
+      "name": "code-reviewer",
+      "title": "Principal code reviewer",
+      "path": "agents/code-reviewer.md",
+      "description": "Performs independent, read-only code reviews for correctness, security, data integrity, compatibility, reliability, and test effectiveness. Delegate pull-request and diff reviews before merge or release; report actionable findings rather than rewriting code.",
+      "recommended_skills": [
+        "code-review",
+        "security-audit",
+        "testing-strategy"
+      ],
+      "default_mode": "read-only",
+      "tags": [
+        "code",
+        "reviewer"
+      ]
+    },
+    {
+      "name": "data-engineer",
+      "title": "Senior data engineer",
+      "path": "agents/data-engineer.md",
+      "description": "Designs and operates ingestion, transformation, orchestration, warehouse/lakehouse, data contracts, data quality, governance, and analytics pipelines. Delegate ETL/ELT, backfills, schema evolution, and data reliability work here.",
+      "recommended_skills": [
+        "data-engineering",
+        "database-engineering",
+        "observability-reliability"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "data",
+        "engineer"
+      ]
+    },
+    {
+      "name": "database-engineer",
+      "title": "Senior database engineer",
+      "path": "agents/database-engineer.md",
+      "description": "Designs and reviews database schemas, SQL, indexes, transactions, concurrency, backups, and safe migrations. Delegate PostgreSQL and relational-data work, performance diagnosis, data-integrity issues, and production migration planning here.",
+      "recommended_skills": [
+        "database-engineering",
+        "backend-engineering",
+        "performance-optimization"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "database",
+        "engineer"
+      ]
+    },
+    {
+      "name": "devops-engineer",
+      "title": "Senior DevOps and platform engineer",
+      "path": "agents/devops-engineer.md",
+      "description": "Designs and operates secure, reproducible CI/CD, cloud infrastructure, containers, deployments, and observability. Delegate release engineering, infrastructure changes, pipeline failures, and production-readiness work here.",
+      "recommended_skills": [
+        "devops-cloud",
+        "observability-reliability",
+        "security-audit"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "devops",
+        "engineer"
+      ]
+    },
+    {
+      "name": "documentation-engineer",
+      "title": "Technical documentation engineer",
+      "path": "agents/documentation-engineer.md",
+      "description": "Produces accurate, task-oriented technical documentation, READMEs, API references, runbooks, ADRs, onboarding guides, and release notes. Delegate documentation audits, docs-as-code, and technical communication here.",
+      "recommended_skills": [
+        "technical-writing",
+        "api-design",
+        "architecture"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "documentation",
+        "engineer"
+      ]
+    },
+    {
+      "name": "frontend-engineer",
+      "title": "Senior frontend engineer",
+      "path": "agents/frontend-engineer.md",
+      "description": "Builds accessible, responsive, production-ready web interfaces using React, TypeScript, and other modern frameworks. Delegate page and component work, browser issues, forms, state, API integration, and frontend performance here.",
+      "recommended_skills": [
+        "frontend-engineering",
+        "accessibility-ux",
+        "testing-strategy"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "frontend",
+        "engineer"
+      ]
+    },
+    {
+      "name": "mobile-engineer",
+      "title": "Senior mobile engineer",
+      "path": "agents/mobile-engineer.md",
+      "description": "Builds and validates cross-platform or native mobile applications, including Flutter and React Native, with secure lifecycle, navigation, offline, permissions, performance, accessibility, and release behavior.",
+      "recommended_skills": [
+        "mobile-engineering",
+        "accessibility-ux",
+        "testing-strategy"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "mobile",
+        "engineer"
+      ]
+    },
+    {
+      "name": "product-manager",
+      "title": "Product manager and product analyst",
+      "path": "agents/product-manager.md",
+      "description": "Converts ambiguous ideas into evidence-based product requirements, user journeys, acceptance criteria, scope boundaries, success measures, and delivery decisions. Delegate feature discovery, MVP definition, backlog refinement, and stakeholder alignment here.",
+      "recommended_skills": [
+        "product-specification",
+        "architecture",
+        "technical-writing"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "product",
+        "manager"
+      ]
+    },
+    {
+      "name": "reliability-engineer",
+      "title": "Site reliability and observability engineer",
+      "path": "agents/reliability-engineer.md",
+      "description": "Improves production reliability through SLI/SLO design, observability, alerting, incident analysis, resilience patterns, capacity planning, and recovery engineering. Delegate production readiness, on-call, outage analysis, and reliability work here.",
+      "recommended_skills": [
+        "observability-reliability",
+        "devops-cloud",
+        "performance-optimization"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "reliability",
+        "engineer"
+      ]
+    },
+    {
+      "name": "security-auditor",
+      "title": "Application security auditor",
+      "path": "agents/security-auditor.md",
+      "description": "Performs authorized, evidence-based security reviews of source code, APIs, cloud infrastructure, identities, dependencies, and AI-agent trust boundaries. Delegate pre-release audits, threat modeling, and remediation verification here.",
+      "recommended_skills": [
+        "security-audit",
+        "ai-integration",
+        "code-review"
+      ],
+      "default_mode": "read-only",
+      "tags": [
+        "security",
+        "auditor"
+      ]
+    },
+    {
+      "name": "test-engineer",
+      "title": "Senior test engineer",
+      "path": "agents/test-engineer.md",
+      "description": "Designs and implements deterministic tests across unit, integration, contract, browser, end-to-end, performance, and security layers. Delegate test strategy, regression suites, CI reliability, and flaky-test investigations here.",
+      "recommended_skills": [
+        "testing-strategy",
+        "debugging",
+        "observability-reliability"
+      ],
+      "default_mode": "read-write",
+      "tags": [
+        "test",
+        "engineer"
+      ]
+    }
   ]
 }
