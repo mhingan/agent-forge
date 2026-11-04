@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0 - 2026-11-04
+
+### Added
+- Added Forge Runner, a delivery coordinator profile for Forge Runtime and user-approved MCP integrations.
+- Synchronized the new role and catalog into installable package data.
+
+### Security
+- Added credential-vault, least-privilege integration discovery, and approval guidance for external side effects.
+
 ## 1.1.0 - 2026-11-04
 
 ### Added
