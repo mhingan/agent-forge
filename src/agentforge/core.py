@@ -361,7 +361,7 @@ def _copy_managed(source: Path | None, destination: Path, text: str | None, targ
         current_hash = _hash_path(destination)
         if current_hash not in expected_hashes:
             messages.append(f"KEEP modified managed path (local edits preserved, even with --force): {destination}")
-            return "managed"
+            return "modified"
         if not force:
             messages.append(f"KEEP managed path (use --force to refresh unchanged content): {destination}")
             return "managed"
