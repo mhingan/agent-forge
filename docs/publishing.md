@@ -1,72 +1,37 @@
-# Publishing AgentForge to PyPI
+# Publishing AgentForge to PyPI locally
 
-AgentForge is built with the standard Python packaging workflow. The distribution name is
-`agentforge-toolkit`; the installed command is `agentforge`.
+The distribution name is agentforge-toolkit and the installed command is agentforge. Releases are uploaded locally by the maintainer with a project-scoped PyPI API token. GitHub Actions do not publish the package.
 
-## One-time PyPI Trusted Publisher setup
+## Verify the repository
 
-Configure this once in the PyPI project settings. If the project has not been created yet,
-create it with an initial manual upload first, then configure its publisher.
+Start from a clean checkout and run:
 
-1. Open the project settings on PyPI: https://pypi.org/manage/project/agentforge-toolkit/settings/publishing/
-2. Add a pending publisher with:
-   - Owner: `mhingan`
-   - Repository: `agent-forge`
-   - Workflow filename: `publish-pypi.yml`
-   - Environment name: `pypi`
-3. Save the publisher configuration.
+    python -m pip install --upgrade build twine
+    python scripts/format_json.py --check
+    python scripts/sync_package_data.py --check
+    python -m agentforge validate --strict
+    python -m unittest discover -s tests -v
 
-The workflow uses GitHub's OIDC identity token. No PyPI API token or GitHub secret is needed.
+## Build and check distributions
 
-## First publication
+    rm -rf dist build
+    python -m build
+    python -m twine check dist/*
 
-If `agentforge-toolkit` does not exist on PyPI yet, Trusted Publishing cannot create the
-project on its own. Make the first upload manually from a clean checkout:
+Check that pyproject.toml and src/agentforge/__init__.py contain the same new version before building.
 
-```bash
-git clone https://github.com/mhingan/agent-forge.git
-cd agent-forge
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade build twine
-python -m build
-python -m twine check dist/*
-python -m twine upload dist/*
-```
+## Upload locally
 
-Authenticate with username `__token__` and a PyPI API token as the password. Do not commit
-the token or put it in the repository.
+Create a PyPI API token for the agentforge-toolkit project, then run:
 
-If the project already exists on PyPI, skip the manual upload and configure the Trusted
-Publisher directly.
+    python -m twine upload dist/*
 
-## Subsequent releases
+When prompted, use __token__ as the username and paste the API token as the password. Twine hides password input. Do not put the token in source files, shell scripts, GitHub files, or committed environment files.
 
-1. Update the version in both `pyproject.toml` and `src/agentforge/__init__.py`.
-2. Update `CHANGELOG.md`.
-3. Commit and push the changes.
-4. Create and publish a GitHub Release whose tag matches the package version, for example
-   `v1.1.1`.
-5. The `Publish AgentForge to PyPI` workflow runs validation, tests, builds the wheel and
-   source distribution, checks the distributions, and publishes them to PyPI.
+## Versioning
 
-PyPI releases are immutable: never reuse a version that has already been uploaded. Bump the
-version for every release.
+PyPI releases are immutable. Increase the version in both pyproject.toml and src/agentforge/__init__.py for each release, update CHANGELOG.md, rebuild, and upload the new distributions. Never reuse an already-uploaded version.
 
-## Local verification
+Install the package with:
 
-```bash
-python -m pip install --upgrade build twine
-python scripts/format_json.py --check
-python scripts/sync_package_data.py --check
-python -m agentforge validate --strict
-python -m unittest discover -s tests -v
-python -m build
-python -m twine check dist/*
-```
-
-Install the published package with:
-
-```bash
-python -m pip install agentforge-toolkit
-```
+    python -m pip install --upgrade agentforge-toolkit
