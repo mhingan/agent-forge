@@ -30,13 +30,27 @@ def load_manifest(root: Path, scope: str) -> tuple[Path, dict[str, Any]]:
     manifest_path = (Path.home() if scope == "global" else root) / ".agentforge" / "install-manifest.json"
     if manifest_path.exists():
         try:
-            data = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError) as exc:
+            data = _load_json_file(manifest_path)
+        except (json.JSONDecodeError, OSError, ValueError) as exc:
             raise ValueError(f"Cannot read install manifest: {manifest_path}: {exc}") from exc
     else:
         data = {"version": 1, "installations": []}
-    data.setdefault("version", 1)
-    data.setdefault("installations", [])
+    if not isinstance(data, dict) or data.get("version") != 1:
+        raise ValueError(f"Unsupported or malformed install manifest: {manifest_path}")
+    entries = data.get("installations")
+    if not isinstance(entries, list):
+        raise ValueError(f"Malformed installations list in manifest: {manifest_path}")
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise ValueError(f"Malformed manifest entry at index {index}")
+        if entry.get("target") not in TARGETS:
+            raise ValueError(f"Unknown target in manifest entry {index}")
+        if not isinstance(entry.get("path"), str) or not Path(entry["path"]).is_absolute():
+            raise ValueError(f"Invalid absolute path in manifest entry {index}")
+        if not isinstance(entry.get("kind"), str) or not isinstance(entry.get("name"), str):
+            raise ValueError(f"Invalid kind/name in manifest entry {index}")
+        if not isinstance(entry.get("sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", entry["sha256"]):
+            raise ValueError(f"Invalid SHA-256 in manifest entry {index}")
     return manifest_path, data
 
 
@@ -54,6 +68,60 @@ def _hash_path(path: Path) -> str:
         return "missing"
     return digest.hexdigest()
 
+
+
+def _is_within(path: Path, root: Path) -> bool:
+    """Return True when path resolves inside root (including root itself)."""
+    try:
+        path.resolve(strict=False).relative_to(root.resolve(strict=False))
+        return True
+    except ValueError:
+        return False
+
+
+def _is_managed_location(path: Path, root: Path, scope: str) -> bool:
+    """Constrain manifest-driven deletion to AgentForge's known install paths."""
+    try:
+        relative = path.resolve(strict=False).relative_to(root.resolve(strict=False)).as_posix()
+    except ValueError:
+        return False
+    if scope == "project":
+        allowed = (
+            ".claude/skills/", ".claude/agents/", ".codex/agents/",
+            ".agents/skills/", ".agents/agents/", ".agents/rules/",
+            ".gemini/skills/", ".gemini/agents/",
+            ".github/skills/", ".github/agents/",
+            ".agentforge/rules/", ".agentforge/workflows/",
+        )
+        exact = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".github/copilot-instructions.md"}
+    else:
+        allowed = (
+            ".claude/skills/", ".claude/agents/", ".agents/skills/",
+            ".codex/agents/", ".copilot/skills/", ".copilot/agents/",
+            ".gemini/skills/", ".gemini/agents/",
+            ".gemini/config/skills/", ".gemini/config/agents/", ".gemini/config/rules/",
+            ".gemini/antigravity-cli/skills/",
+        )
+        exact = set()
+    return relative in exact or any(relative.startswith(prefix) for prefix in allowed)
+
+
+def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
+def _load_json_file(path: Path) -> Any:
+    text = path.read_text(encoding="utf-8")
+    return json.loads(
+        text,
+        object_pairs_hook=_reject_duplicate_json_keys,
+        parse_constant=lambda value: (_ for _ in ()).throw(ValueError(f"invalid JSON constant: {value}")),
+    )
 
 def validate_repository(root: Path | None = None, strict: bool = False) -> list[str]:
     root = root or data_root()
@@ -103,10 +171,15 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
             skill_files = [p for p in folder.rglob("*") if p.is_file() and p.name.lower() == "skill.md"]
             if len(skill_files) != 1:
                 errors.append(f"{folder.relative_to(root)}: expected exactly one SKILL.md, found {len(skill_files)}")
+            content = skill_file.read_text(encoding="utf-8")
             if strict:
-                content = skill_file.read_text(encoding="utf-8")
                 if "TODO" in content or "FIXME" in content:
                     errors.append(f"{rel}: contains TODO/FIXME marker")
+                if len(content.splitlines()) > 500:
+                    errors.append(f"{rel}: exceeds 500 lines; move deep reference material into references/")
+                for relative in re.findall(r"\\[[^\\]]+\\]\\((?!https?://|mailto:)([^)#]+)(?:#[^)]*)?\\)", content):
+                    if not (folder / relative).exists():
+                        errors.append(f"{rel}: broken local reference link '{relative}'")
 
     agent_names: set[str] = set()
     if agents_dir.is_dir():
@@ -142,6 +215,70 @@ def validate_repository(root: Path | None = None, strict: bool = False) -> list[
     for required in ["README.md", "LICENSE", "SECURITY.md", "AGENTS.md", "docs/compatibility.md"]:
         if not (root / required).is_file():
             errors.append(f"Missing required project file: {required}")
+
+    # All committed JSON must be valid, duplicate-key-free, and consistently
+    # rendered with two-space indentation, UTF-8 characters, and a final newline.
+    for json_file in sorted(root.rglob("*.json")):
+        if ".git" in json_file.parts or ".venv" in json_file.parts:
+            continue
+        try:
+            raw = json_file.read_text(encoding="utf-8")
+            parsed = _load_json_file(json_file)
+            canonical = json.dumps(parsed, indent=2, ensure_ascii=False, allow_nan=False) + "\\n"
+            if raw != canonical:
+                errors.append(f"{json_file.relative_to(root)}: JSON is not pretty-printed (use 2 spaces and a trailing newline)")
+        except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+            errors.append(f"{json_file.relative_to(root)}: invalid JSON: {exc}")
+
+    try:
+        skills_catalog = _load_json_file(root / "catalog" / "skills.json")
+        skill_entries = {item["name"]: item for item in skills_catalog["skills"]}
+        if set(skill_entries) != skill_names:
+            errors.append("catalog/skills.json: entries do not match filesystem")
+        for skill_name, entry in skill_entries.items():
+            if entry.get("path") != f"skills/{skill_name}/SKILL.md":
+                errors.append(f"catalog/skills.json: invalid path for {skill_name}")
+            if not isinstance(entry.get("title"), str) or not isinstance(entry.get("tags"), list):
+                errors.append(f"catalog/skills.json: malformed entry for {skill_name}")
+            skill_file = root / "skills" / skill_name / "SKILL.md"
+            if skill_file.is_file():
+                metadata, _ = parse_frontmatter(skill_file.read_text(encoding="utf-8"))
+                if entry.get("description") != metadata.get("description"):
+                    errors.append(f"catalog/skills.json: description mismatch for {skill_name}")
+    except (OSError, KeyError, TypeError, json.JSONDecodeError, ValueError) as exc:
+        errors.append(f"catalog/skills.json: invalid catalog structure: {exc}")
+
+    try:
+        agents_catalog = _load_json_file(root / "catalog" / "agents.json")
+        agent_entries = {item["name"]: item for item in agents_catalog["agents"]}
+        if set(agent_entries) != agent_names:
+            errors.append("catalog/agents.json: entries do not match filesystem")
+        for agent_name, entry in agent_entries.items():
+            if entry.get("path") != f"agents/{agent_name}.md":
+                errors.append(f"catalog/agents.json: invalid path for {agent_name}")
+            if entry.get("default_mode") not in {"read-only", "read-write"}:
+                errors.append(f"catalog/agents.json: invalid default_mode for {agent_name}")
+            recommendations = entry.get("recommended_skills", [])
+            if not isinstance(recommendations, list) or not set(recommendations).issubset(skill_names):
+                errors.append(f"catalog/agents.json: unknown recommended skill for {agent_name}")
+    except (OSError, KeyError, TypeError, json.JSONDecodeError, ValueError) as exc:
+        errors.append(f"catalog/agents.json: invalid catalog structure: {exc}")
+
+    try:
+        target_catalog = _load_json_file(root / "adapters" / "targets.json")
+        if set(target_catalog.get("targets", {})) != set(TARGETS):
+            errors.append("adapters/targets.json: targets do not match implemented adapters")
+        for target_id, target in TARGETS.items():
+            configured = target_catalog["targets"].get(target_id, {})
+            skill_paths = configured.get("skills", {}).get("project", [])
+            agent_paths = configured.get("agents", {}).get("project", [])
+            if not skill_paths or skill_paths[0] != target.project_skills:
+                errors.append(f"adapters/targets.json: project skill path mismatch for {target_id}")
+            if target.project_agents and (not agent_paths or agent_paths[0] != target.project_agents):
+                errors.append(f"adapters/targets.json: project agent path mismatch for {target_id}")
+    except (OSError, KeyError, TypeError, json.JSONDecodeError, ValueError) as exc:
+        errors.append(f"adapters/targets.json: invalid target registry: {exc}")
+
     return errors
 
 
@@ -189,18 +326,37 @@ def _save_manifest(path: Path, manifest: dict[str, Any], dry_run: bool) -> None:
 
 def _copy_managed(source: Path | None, destination: Path, text: str | None, target: str,
                   kind: str, name: str, manifest: dict[str, Any], force: bool,
-                  dry_run: bool, messages: list[str]) -> None:
-    dest_abs = str(destination.resolve())
-    owned = any(item.get("path") == dest_abs for item in manifest["installations"])
+                  dry_run: bool, messages: list[str], install_root: Path) -> str:
+    """Copy one artifact without claiming or overwriting user-owned content.
+
+    --force refreshes only an unchanged AgentForge-managed artifact. A local
+    modification is always preserved and must be resolved manually.
+    """
+    if not _is_within(destination, install_root):
+        raise ValueError(f"Refusing to install outside the selected {install_root} scope: {destination}")
+
+    dest_abs = str(destination.resolve(strict=False))
+    existing_records = [item for item in manifest["installations"] if item.get("path") == dest_abs]
+    owned = bool(existing_records)
+
     if destination.exists() and not owned:
-        messages.append(f"SKIP unmanaged existing path: {destination}")
-        return
-    if destination.exists() and owned and not force:
-        messages.append(f"KEEP managed path (use --force to refresh): {destination}")
-        return
+        messages.append(f"SKIP unmanaged existing path (left untouched): {destination}")
+        return "unmanaged"
+
+    if destination.exists() and owned:
+        expected_hashes = {item.get("sha256") for item in existing_records}
+        current_hash = _hash_path(destination)
+        if current_hash not in expected_hashes:
+            messages.append(f"KEEP modified managed path (local edits preserved, even with --force): {destination}")
+            return "managed"
+        if not force:
+            messages.append(f"KEEP managed path (use --force to refresh unchanged content): {destination}")
+            return "managed"
+
     messages.append(f"{'WOULD INSTALL' if dry_run else 'INSTALL'} {kind} '{name}' for {target}: {destination}")
     if dry_run:
-        return
+        return "planned"
+
     if destination.is_dir():
         shutil.rmtree(destination)
     elif destination.exists():
@@ -214,6 +370,7 @@ def _copy_managed(source: Path | None, destination: Path, text: str | None, targ
     else:
         destination.write_text(text or "", encoding="utf-8")
     _record(manifest, target, kind, name, destination)
+    return "written"
 
 
 def install(root: Path | None = None, agent_arg: str = "all", scope: str = "project",
@@ -240,9 +397,9 @@ def install(root: Path | None = None, agent_arg: str = "all", scope: str = "proj
         for skill_dir in selected_skills:
             dest = skill_root / skill_dir.name
             before = len(manifest["installations"])
-            _copy_managed(skill_dir, dest, None, target_id, "skill", skill_dir.name,
-                          manifest, force, dry_run, messages)
-            if not dry_run and len(manifest["installations"]) == before and dest.exists():
+            status = _copy_managed(skill_dir, dest, None, target_id, "skill", skill_dir.name,
+                                   manifest, force, dry_run, messages, project_root)
+            if status == "managed" and not dry_run and len(manifest["installations"]) == before and dest.exists():
                 if not any(x.get("target") == target_id and x.get("kind") == "skill" and x.get("name") == skill_dir.name and x.get("path") == str(dest.resolve()) for x in manifest["installations"]):
                     _record(manifest, target_id, "skill", skill_dir.name, dest)
 
@@ -257,9 +414,9 @@ def install(root: Path | None = None, agent_arg: str = "all", scope: str = "proj
                     filename, rendered = render_agent(target_id, agent_source)
                     dest = agent_root / filename
                     before = len(manifest["installations"])
-                    _copy_managed(None, dest, rendered, target_id, "agent", agent_source.stem,
-                                  manifest, force, dry_run, messages)
-                    if not dry_run and len(manifest["installations"]) == before and dest.exists():
+                    status = _copy_managed(None, dest, rendered, target_id, "agent", agent_source.stem,
+                                           manifest, force, dry_run, messages, project_root)
+                    if status == "managed" and not dry_run and len(manifest["installations"]) == before and dest.exists():
                         if not any(x.get("target") == target_id and x.get("kind") == "agent" and x.get("name") == agent_source.stem and x.get("path") == str(dest.resolve()) for x in manifest["installations"]):
                             _record(manifest, target_id, "agent", agent_source.stem, dest)
 
@@ -267,9 +424,9 @@ def install(root: Path | None = None, agent_arg: str = "all", scope: str = "proj
         rule_sources = sorted((source_root / "rules").glob("*.md"))
         for rule_source in rule_sources:
             dest = project_root / ".agentforge" / "rules" / rule_source.name
-            _copy_managed(rule_source, dest, None, targets[0], "rule", rule_source.stem,
-                          manifest, force, dry_run, messages)
-            if not dry_run and dest.exists():
+            status = _copy_managed(rule_source, dest, None, targets[0], "rule", rule_source.stem,
+                                   manifest, force, dry_run, messages, project_root)
+            if status in {"written", "managed"} and not dry_run and dest.exists():
                 for extra_target in targets[1:]:
                     _record(manifest, extra_target, "rule", rule_source.stem, dest)
         antigravity_targets = [t for t in targets if t in {"antigravity", "antigravity-cli"}]
@@ -278,18 +435,18 @@ def install(root: Path | None = None, agent_arg: str = "all", scope: str = "proj
             for rule_source in rule_sources:
                 dest = project_root / ".agents" / "rules" / rule_source.name
                 rendered = render_antigravity_rule(rule_source)
-                _copy_managed(None, dest, rendered, primary, "antigravity-rule", rule_source.stem,
-                              manifest, force, dry_run, messages)
-                if not dry_run and dest.exists():
+                status = _copy_managed(None, dest, rendered, primary, "antigravity-rule", rule_source.stem,
+                                       manifest, force, dry_run, messages, project_root)
+                if status in {"written", "managed"} and not dry_run and dest.exists():
                     for extra_target in antigravity_targets[1:]:
                         _record(manifest, extra_target, "antigravity-rule", rule_source.stem, dest)
 
     if scope == "project" and "workflows" in components:
         for workflow in sorted((source_root / "workflows").glob("*.md")):
             dest = project_root / ".agentforge" / "workflows" / workflow.name
-            _copy_managed(workflow, dest, None, targets[0], "workflow", workflow.stem,
-                          manifest, force, dry_run, messages)
-            if not dry_run and dest.exists():
+            status = _copy_managed(workflow, dest, None, targets[0], "workflow", workflow.stem,
+                                   manifest, force, dry_run, messages, project_root)
+            if status in {"written", "managed"} and not dry_run and dest.exists():
                 for extra_target in targets[1:]:
                     _record(manifest, extra_target, "workflow", workflow.stem, dest)
 
@@ -301,9 +458,9 @@ def install(root: Path | None = None, agent_arg: str = "all", scope: str = "proj
         for target_id, relative, content in sorted(context_files, key=lambda x: (x[1], x[0])):
             dest = project_root / relative
             before = len(manifest["installations"])
-            _copy_managed(None, dest, content, target_id, "context", Path(relative).name,
-                          manifest, force, dry_run, messages)
-            if not dry_run and dest.exists() and len(manifest["installations"]) == before:
+            status = _copy_managed(None, dest, content, target_id, "context", Path(relative).name,
+                                   manifest, force, dry_run, messages, project_root)
+            if status == "managed" and not dry_run and dest.exists() and len(manifest["installations"]) == before:
                 if not any(x.get("target") == target_id and x.get("kind") == "context" and x.get("path") == str(dest.resolve()) for x in manifest["installations"]):
                     _record(manifest, target_id, "context", Path(relative).name, dest)
 
