@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Check JSON formatting
+        run: python scripts/format_json.py --check
       - name: Check embedded package data
         run: python scripts/sync_package_data.py --check
       - name: Validate skills and catalogs
